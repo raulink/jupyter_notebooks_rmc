@@ -1,0 +1,9 @@
+seaborn
+numpy
+pandas
+reliability
+
+jupyter
+notebook
+jupyterlab
+scipy
