@@ -7,3 +7,5 @@ jupyter
 notebook
 jupyterlab
 scipy
+scikit-learn
+openpyxl
