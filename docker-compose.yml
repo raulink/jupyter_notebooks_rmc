@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8050:8050"
+    volumes:
+      - .:/app
+      - .env:/app/.env
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14
+    ports:
+      - "5454:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
