@@ -1,4 +1,6 @@
 #!/bin/bash
 
 # Iniciar jupyter notebook
-jupyter-notebook --no-browser --port=8889 --ip=0.0.0.0
+# jupyter-notebook --no-browser --port=8889 --ip=0.0.0.0
+
+gunicorn -b 0.0.0.0:8051 app:server
