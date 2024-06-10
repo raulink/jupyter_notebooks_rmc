@@ -1,15 +1,15 @@
 import dash
 from dash import html
 import os
-import psycopg2
+#import psycopg2
 
 # Conexión a la base de datos PostgreSQL
-conn = psycopg2.connect(
-    host="db",
-    database="mydatabase",
-    user="postgres",
-    password="password"
-)
+#conn = psycopg2.connect(
+#    host="db",
+#    database="mydatabase",
+#    user="postgres",
+#    password="password"
+#)
 
 # Crear una aplicación Dash
 app = dash.Dash(__name__)
