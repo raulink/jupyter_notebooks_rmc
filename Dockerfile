@@ -1,19 +1,32 @@
-# Usar una imagen base de Python
-FROM python:3.9-slim
+# Usar la imagen base oficial de Python
+FROM python:3.9
 
-# Establecer el directorio de trabajo dentro del contenedor
+# Establecer el directorio de trabajo
 WORKDIR /app
 
-# Copiar el archivo de requisitos y luego instalar las dependencias
-COPY requirements.txt requirements.txt
+# Instalar las dependencias necesarias
+#RUN apt-get update && apt-get install -y \
+#    python3-venv \
+#    && apt-get clean
+# Copiar los archivos necesarios al contenedor
+COPY ./app /app
+
+# Crear el entorno virtual
+#RUN python3 -m venv venv
+
+# Activar el entorno virtual, actualizar pip y setuptools
+# RUN /bin/bash -c "source /app/venv/bin/activate && python3 -m pip install --upgrade pip setuptools"
+RUN python --version
+
 RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+# --no-cache-dir
+RUN pip install -r requirements.txt
 
-# Copiar el código de la aplicación
-COPY . .
+# Instalar los requisitos
+# RUN /bin/bash -c "source /app/venv/bin/activate && pip3 install -r requirements.txt"
 
-# Exponer el puerto en el que correrá la aplicación
-EXPOSE 8050
+# Hacer que run.sh sea ejecutable
+RUN chmod +x /app/run.sh
 
-# Comando para ejecutar la aplicación
-CMD ["python", "app/app.py"]
+# Ejecutar run.sh
+CMD ["/app/run.sh"]

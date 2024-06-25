@@ -1,4 +1,5 @@
 #!/bin/bash
 
-# Iniciar jupyter notebook
-jupyter-notebook --no-browser --port=8889 --ip=0.0.0.0
+#source venv/bin/activate
+
+uvicorn --host 0.0.0.0 --port 8080 main:application --reload

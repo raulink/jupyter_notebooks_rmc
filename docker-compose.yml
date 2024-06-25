@@ -1,26 +1,26 @@
-version: '2.2'
+version: '3.3'
 
 services:
-  web:
-    build: .
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "8050:8050"
-    volumes:
-      - .:/app
-      - .env:/app/.env
+      - "8090:8080"
+    env_file:
+      - .env
     depends_on:
       - db
+    volumes:
+      - ./app:/app
 
   db:
-    image: postgres:14
+    image: postgres:latest
     ports:
-      - "5455:5432"
+      - "5460:5432"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: Catalogo
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-volumes:
-  postgres_data:
+      - ./app/db:/docker-entrypoint-initdb.d
