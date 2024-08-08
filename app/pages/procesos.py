@@ -18,7 +18,6 @@ import base64
 import os
 from docxtpl import DocxTemplate
 
-
 from pages.reportgenerator import *
 
 
@@ -32,32 +31,32 @@ layout = html.Div([
     
     # Botón para subir el archivo Excel
     dcc.Upload(
-        id='upload-excel',
+        id='upload-excel-1',
         children=html.Button('Subir Archivo Excel'),
         style={'width': '100%', 'height': '70px', 'lineHeight': '60px', 'borderWidth': '1px', 'borderStyle': 'dashed', 'borderRadius': '5px', 'textAlign': 'center', 'margin': '10px'}
     ),
     
     # Botón para subir la plantilla de Word
     dcc.Upload(
-        id='upload-template',
+        id='upload-template-1',
         children=html.Button('Subir Plantilla'),
         style={'width': '100%', 'height': '70px', 'lineHeight': '60px', 'borderWidth': '1px', 'borderStyle': 'dashed', 'borderRadius': '5px', 'textAlign': 'center', 'margin': '10px'}
     ),
     
     # Botón para generar el documento final
-    html.Button("Generar Documento", id="generate-button", n_clicks=0, disabled=True),
-    dcc.Download(id="download-docx"),
+    html.Button("Generar Documento", id="generate-button-1", n_clicks=0, disabled=True),
+    dcc.Download(id="download-docx-1"),
     
     # Mensaje de estado
-    html.Div(id='output-state', style={'marginTop': 20})
+    html.Div(id='output-state-1', style={'marginTop': 20})
 ])
 
 print("inicio")
 
 @callback(
-    [Output('generate-button', 'disabled'), Output('output-state', 'children')],
-    [Input('upload-excel', 'contents'), Input('upload-template', 'contents')],
-    [State('upload-excel', 'filename'), State('upload-template', 'filename')]
+    [Output('generate-button-1', 'disabled'), Output('output-state-1', 'children')],
+    [Input('upload-excel-1', 'contents'), Input('upload-template-1', 'contents')],
+    [State('upload-excel-1', 'filename'), State('upload-template-1', 'filename')]
 )
 def handle_uploads(excel_contents, template_contents, excel_filename, template_filename):
     messages = []
@@ -67,7 +66,7 @@ def handle_uploads(excel_contents, template_contents, excel_filename, template_f
         path = os.path.join('temp', excel_filename)
         with open(path, 'wb') as f:
             f.write(decoded)
-        #messages.append(f"Archivo Excel {excel_filename} subido exitosamente.")
+        messages.append(f"Archivo Excel {excel_filename} subido exitosamente.")
     
     if template_contents:
         content_type, content_string = template_contents.split(',')
@@ -82,9 +81,9 @@ def handle_uploads(excel_contents, template_contents, excel_filename, template_f
         return True, " ".join(messages)
 
 @callback(
-    Output('download-docx', 'data'),
-    [Input('generate-button', 'n_clicks')],
-    [State('upload-excel', 'filename'), State('upload-template', 'filename')]
+    Output('download-docx-1', 'data'),
+    [Input('generate-button-1', 'n_clicks')],
+    [State('upload-excel-1', 'filename'), State('upload-template-1', 'filename')]
 )
 def generate_document(n_clicks, excel_filename, template_filename):
     if n_clicks >0:

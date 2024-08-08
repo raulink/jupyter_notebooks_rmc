@@ -22,7 +22,7 @@ app.layout = html.Div([
             'Planes',
             href='/planes',
             className='btn btn-primary me-2'  # Usar clases de Bootstrap para estilo de botón
-        ) 
+        )
                 
     ], style={
         'padding': '10px',
@@ -55,7 +55,8 @@ def display_page(pathname):
     #elif pathname == '/grafico_ingreso'    return grafico_ingreso.layout
     #elif pathname == '/grafico_salida': return grafico_salida.layout
     if pathname == '/procesos': return procesos.layout
-    elif pathname == '/planes': return planes.layout2
+    
+    elif pathname == '/planes': return planes.layout
     else:
         # Manejar rutas no encontradas
         return '404 - Página no encontrada'
