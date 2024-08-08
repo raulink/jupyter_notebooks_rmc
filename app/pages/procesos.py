@@ -8,49 +8,71 @@ from dash.dependencies import State
 # Asegúrate de que este import sea correcto según la ubicación de tu clase
 from planes.googleSheetProcesor import GoogleSheetProcessor
 
-# Inicializar la app de Dash
-app = dash.Dash(__name__)
+from pages.reportgenerator import *
+
+
+
+# Crear la carpeta temp si no existe
+# Inicializar la app de Dash con Bootstrap
+#app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 layout = html.Div([
-    html.H1("Sistema de Procesamiento de Google Sheets"),
-
-    # Botón para subir la URL de Google Sheet
-    dcc.Input(
-        id='sheet-url', type='text', placeholder='https://docs.google.com/spreadsheets/d/1OkECu7qNfGZxX_rc2RDbaz0A-oE_gUwJ0P2tjU_x-q0/edit?gid=1199302294#gid=1199302294', style={'width': '100%', 'margin': '10px'},    
+    html.H1("Sistema de Contrataciones"),
+    
+    # Botón para subir el archivo Excel
+    dcc.Upload(
+        id='upload-excel-1',
+        children=html.Button('Subir Archivo Excel'),
+        style={'width': '100%', 'height': '70px', 'lineHeight': '60px', 'borderWidth': '1px', 'borderStyle': 'dashed', 'borderRadius': '5px', 'textAlign': 'center', 'margin': '10px'}
     ),
-    html.Button('Procesar Google Sheet', id='process-sheet', n_clicks=0),
-
+    
+    # Botón para subir la plantilla de Word
+    dcc.Upload(
+        id='upload-template-1',
+        children=html.Button('Subir Plantilla'),
+        style={'width': '100%', 'height': '70px', 'lineHeight': '60px', 'borderWidth': '1px', 'borderStyle': 'dashed', 'borderRadius': '5px', 'textAlign': 'center', 'margin': '10px'}
+    ),
+    
+    # Botón para generar el documento final
+    html.Button("Generar Documento", id="generate-button-1", n_clicks=0, disabled=True),
+    dcc.Download(id="download-docx-1"),
+    
     # Mensaje de estado
-    html.Div(id='output-state', style={'marginTop': 20}),
-
-    # Botón para descargar el archivo Excel generado
-    html.Button("Descargar Archivo Excel", id="download-button",
-                n_clicks=0, disabled=True),
-    dcc.Download(id="download-excel")
+    html.Div(id='output-state-1', style={'marginTop': 20})
 ])
 
 
-@app.callback(
-    [Output('download-button', 'disabled'),
-     Output('output-state', 'children')],
-    [Input('process-sheet', 'n_clicks')],
-    [State('sheet-url', 'value')]
+@callback(
+    [Output('generate-button-1', 'disabled'), Output('output-state-1', 'children')],
+    [Input('upload-excel-1', 'contents'), Input('upload-template-1', 'contents')],
+    [State('upload-excel-1', 'filename'), State('upload-template-1', 'filename')]
 )
-def handle_processing(n_clicks, sheet_url):
-    if n_clicks > 0 and sheet_url:
-        try:
-            processor = GoogleSheetProcessor(sheet_url)
-            processor.process_data()
-            processor.save_to_excel('processed_output.xlsx')
-            return False, "Procesamiento exitoso. Puede descargar el archivo Excel."
-        except Exception as e:
-            return True, f"Error en el procesamiento: {e}"
-    return True, "Ingrese una URL de Google Sheet válida y haga clic en procesar."
+def handle_uploads(excel_contents, template_contents, excel_filename, template_filename):
+    messages = []
+    if excel_contents:
+        content_type, content_string = excel_contents.split(',')
+        decoded = base64.b64decode(content_string)
+        path = os.path.join('temp', excel_filename)
+        with open(path, 'wb') as f:
+            f.write(decoded)
+        messages.append(f"Archivo Excel {excel_filename} subido exitosamente.")
+    
+    if template_contents:
+        content_type, content_string = template_contents.split(',')
+        decoded = base64.b64decode(content_string)
+        path = os.path.join('temp', template_filename)
+        with open(path, 'wb') as f:
+            f.write(decoded)
+        #messages.append(f"\nPlantilla Word {template_filename} subida exitosamente.")
+    if excel_contents and template_contents:
+        return False, " ".join(messages)
+    else:
+        return True, " ".join(messages)
 
-
-@app.callback(
-    Output('download-excel', 'data'),
-    [Input('download-button', 'n_clicks')]
+@callback(
+    Output('download-docx-1', 'data'),
+    [Input('generate-button-1', 'n_clicks')],
+    [State('upload-excel-1', 'filename'), State('upload-template-1', 'filename')]
 )
 def download_excel(n_clicks):
     if n_clicks > 0:

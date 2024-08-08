@@ -1,46 +1,50 @@
 import dash
-from dash import dash_table
-from dash import dcc  #import dash_core_components as dcc
-from dash import html #import dash_html_components as html
-#import dash_bootstrap_components as dbc
-from dash import dcc, html
-
-from pathlib import Path
-import pandas as pd
-
+from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State
-from dash import dcc, html, Input, Output, callback
-import pandas as pd
-from io import BytesIO
 import base64
 import os
 
+# Definir la función handle_uploads
+def handle_uploads(excel_contents, excel_filename):
+    messages = []
+    if excel_contents:
+        content_type, content_string = excel_contents.split(',')
+        decoded = base64.b64decode(content_string)
+        if not os.path.exists('temp'):
+            os.makedirs('temp')
+        path = os.path.join('temp', excel_filename)
+        with open(path, 'wb') as f:
+            f.write(decoded)
+        messages.append(f"Archivo Excel {excel_filename} subido exitosamente.")
+    return messages
 
-#from pages.reportgenerator import *
-
-
-
-# Crear la carpeta temp si no existe
-# Inicializar la app de Dash con Bootstrap
-#app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
-
-layout2 = html.Div([
+# Layout de la aplicación
+layout = html.Div([
     html.H1("Sistema de Contrataciones"),
     
-    # Botón para subir el archivo Excel
     dcc.Upload(
-        id='upload-excel',
+        id='upload-excel-2',
         children=html.Button('Subir Archivo Excel'),
-        style={'width': '100%', 'height': '70px', 'lineHeight': '60px', 'borderWidth': '1px', 'borderStyle': 'dashed', 'borderRadius': '5px', 'textAlign': 'center', 'margin': '10px'}
+        style={'width': '100%', 'height': '70px', 'lineHeight': '60px', 'borderWidth': '1px', 'borderStyle': 'dashed', 'borderRadius': '5px', 'textAlign': 'center', 'margin': '10px'},
+        multiple=False
     ),
     
-    # Botón para generar el documento final
-    html.Button("Generar Documento", id="generate-button", n_clicks=0, disabled=True),
-    dcc.Download(id="download-docx"),
+    html.Button("Generar Documento", id="generate-button-2", n_clicks=0, disabled=True),
     
-    # Mensaje de estado
-    html.Div(id='output-state', style={'marginTop': 20})
+    html.Div(id='output-state-2', style={'marginTop': 20})
 ])
 
-print("Planes de Mantenimiento")
+# Callback para actualizar el estado del botón y manejar la subida del archivo
+@callback(
+    [Output('generate-button-2', 'disabled'),
+     Output('output-state-2', 'children')],
+    [Input('upload-excel-2', 'contents')],
+    [State('upload-excel-2', 'filename')]
+)
+def update_button_state(contents, filename):
+    if contents:
+        messages = handle_uploads(contents, filename)
+        return False, " ".join(messages)
+    return True, ""
+
 
