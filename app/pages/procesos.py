@@ -1,30 +1,27 @@
 import dash
-from dash import dash_table
-from dash import dcc  #import dash_core_components as dcc
-from dash import html #import dash_html_components as html
-#import dash_bootstrap_components as dbc
-from dash import dcc, html
-
-from pathlib import Path
-import pandas as pd
-from docxtpl import DocxTemplate
-from num2words import num2words
-
-from dash.dependencies import Input, Output, State
 from dash import dcc, html, Input, Output, callback
 import pandas as pd
 from io import BytesIO
 import base64
 import os
-from docxtpl import DocxTemplate
+from dash.dependencies import State
+import dash_bootstrap_components as dbc
 
-from pages.reportgenerator import *
+
+# Asegúrate de que este import sea correcto según la ubicación de tu clase
+from planes.googleSheetProcesor import GoogleSheetProcessor
+
+# from pages.reportgenerator import *
 
 
 
 # Crear la carpeta temp si no existe
 # Inicializar la app de Dash con Bootstrap
-#app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+# Crear la carpeta temp si no existe
+if not os.path.exists('temp'):
+    os.makedirs('temp')
+
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 layout = html.Div([
     html.H1("Sistema de Contrataciones"),
@@ -51,7 +48,6 @@ layout = html.Div([
     html.Div(id='output-state-1', style={'marginTop': 20})
 ])
 
-print("inicio")
 
 @callback(
     [Output('generate-button-1', 'disabled'), Output('output-state-1', 'children')],
@@ -79,18 +75,24 @@ def handle_uploads(excel_contents, template_contents, excel_filename, template_f
         return False, " ".join(messages)
     else:
         return True, " ".join(messages)
-
 @callback(
     Output('download-docx-1', 'data'),
     [Input('generate-button-1', 'n_clicks')],
     [State('upload-excel-1', 'filename'), State('upload-template-1', 'filename')]
 )
-def generate_document(n_clicks, excel_filename, template_filename):
-    if n_clicks >0:
-        # Generar el archivo de salida
-        generator = ReportGenerator('temp/'+template_filename, 'temp/'+excel_filename)
-        # Guardar el documento generado
-        output_path, output_name = generator.create_report()
-        print(f"Archivo de salida {output_name} generado exitosamente.")
-        return dcc.send_file(output_path)
+def download_excel(n_clicks, excel_filename, template_filename):
+    if isinstance(n_clicks, int) and n_clicks > 0:
+        # Ruta donde se guardará el archivo
+        processed_file_path = os.path.join('temp', 'processed_output.xlsx')
+        
+        # Lógica para generar el archivo
+        download_excel(excel_filename, template_filename, processed_file_path)
+
+        # Verifica si el archivo existe antes de permitir la descarga
+        if os.path.exists(processed_file_path):
+            return dcc.send_file(processed_file_path)
+        else:
+            return "Error: El archivo no se ha generado."
     return None
+
+

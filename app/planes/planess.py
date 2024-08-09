@@ -206,7 +206,6 @@ df_raw = gs.read_csv()   # Carga del csv descargado en un dataframe
 # Copiar dataframe
 df = df_raw.copy(deep=True)
 
-# %%
 ## convertir a booleano
 df[list(gs.valores.keys())] = df[gs.valores.keys()].applymap(lambda x: True if x == 'TRUE' else False)
 # Obtener la unidades

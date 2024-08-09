@@ -16,6 +16,8 @@ class ExcelProcessor:
         self.df['valor'] = self.df['Frecuencia'].apply(lambda x: self.valores.get(x, 0))
         self.df['unidad'] = self.df['Frecuencia'].apply(lambda x: self.regimen.get(x, ''))
         
+
+        
         # Mantener solo las columnas necesarias
         columns = ['Plan', 'Accion', 'Trabajo', 'Actividad', 'Tipo', 'Parada', 'Relevancia', 'Especialidad', 'valor', 'unidad']
         self.df = self.df[columns]
