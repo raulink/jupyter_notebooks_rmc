@@ -5,6 +5,8 @@ from io import BytesIO
 import base64
 import os
 from dash.dependencies import State
+import dash_bootstrap_components as dbc
+
 # Asegúrate de que este import sea correcto según la ubicación de tu clase
 from planes.googleSheetProcesor import GoogleSheetProcessor
 
@@ -14,7 +16,11 @@ from pages.reportgenerator import *
 
 # Crear la carpeta temp si no existe
 # Inicializar la app de Dash con Bootstrap
-#app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+# Crear la carpeta temp si no existe
+if not os.path.exists('temp'):
+    os.makedirs('temp')
+
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 layout = html.Div([
     html.H1("Sistema de Contrataciones"),
@@ -68,18 +74,24 @@ def handle_uploads(excel_contents, template_contents, excel_filename, template_f
         return False, " ".join(messages)
     else:
         return True, " ".join(messages)
-
 @callback(
     Output('download-docx-1', 'data'),
     [Input('generate-button-1', 'n_clicks')],
     [State('upload-excel-1', 'filename'), State('upload-template-1', 'filename')]
 )
-def download_excel(n_clicks):
-    if n_clicks > 0:
-        return dcc.send_file('processed_output.xlsx')
+def download_excel(n_clicks, excel_filename, template_filename):
+    if isinstance(n_clicks, int) and n_clicks > 0:
+        # Ruta donde se guardará el archivo
+        processed_file_path = os.path.join('temp', 'processed_output.xlsx')
+        
+        # Lógica para generar el archivo
+        download_excel(excel_filename, template_filename, processed_file_path)
+
+        # Verifica si el archivo existe antes de permitir la descarga
+        if os.path.exists(processed_file_path):
+            return dcc.send_file(processed_file_path)
+        else:
+            return "Error: El archivo no se ha generado."
     return None
 
 
-if __name__ == '__main__':
-    app.layout = layout
-    app.run_server(debug=True)

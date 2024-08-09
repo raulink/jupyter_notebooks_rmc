@@ -4,6 +4,7 @@ from dash.dependencies import Input, Output, State
 import base64
 import os
 
+
 # Definir la función handle_uploads
 def handle_uploads(excel_contents, excel_filename):
     messages = []
@@ -46,5 +47,7 @@ def update_button_state(contents, filename):
         messages = handle_uploads(contents, filename)
         return False, " ".join(messages)
     return True, ""
+
+
 
 
