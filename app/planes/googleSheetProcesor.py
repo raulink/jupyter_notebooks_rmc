@@ -2,7 +2,7 @@ import pandas as pd
 import requests
 
 class GoogleSheetProcessor:
-    def __init__(self, sheet_url):
+    def __init__(self, sheet_url:str):
         self.sheet_url = sheet_url
         self.spreadsheet_id = self.extract_spreadsheet_id(sheet_url)
         self.sheet_id = self.extract_sheet_id(sheet_url)
@@ -32,18 +32,6 @@ class GoogleSheetProcessor:
     def construct_csv_export_url(self):
         return f"https://docs.google.com/spreadsheets/d/{self.spreadsheet_id}/export?format=csv&gid={self.sheet_id}"
 
-    def read_csv(self, filename="temp_sheet.csv"):
-        # Lee el archivo CSV usando pandas
-        self.df = pd.read_csv(filename)
-        self.df.columns = self.df.loc[2, :].to_list()  # la fila 2 como fila
-        self.df = self.df.loc[4:, :]   # Obtener desde la fila 4 en adelante
-        return self.df
-    
-    #def download_csv(self):
-    #    response = requests.get(self.csv_export_url)
-    #    response.raise_for_status()
-    #    return self.read_csv()
-    
     def download_csv(self, output_filename='temp_sheet.csv'):
         # Descarga el archivo CSV y lo guarda temporalmente
         response = requests.get(self.csv_export_url)
@@ -51,7 +39,6 @@ class GoogleSheetProcessor:
         with open(output_filename, 'wb') as f:
             f.write(response.content)
         return output_filename
-        
     def get_unique(self, df: pd.DataFrame, column: str):
         """
         Obtiene un DataFrame con valores únicos de la columna 'Column', con índices ajustados.
@@ -63,13 +50,22 @@ class GoogleSheetProcessor:
         df = df[df[column].notnull()]
         df_unique = pd.DataFrame(df[column].unique(), columns=['value'])
         df_unique.index = df_unique.index + 1
-        return df_unique    
+        return df_unique
+    def buscarIndice(self, df:pd.DataFrame, valor,columna='value'):
+        return int (df[df[columna]==valor].index[0])
 
-    
-    def process_data(self):
 
-        print("Procesando Datos")
-        df = self.download_csv(output_filename="temp_csv")
+    def read_csv(self, filename="temp_sheet.csv"):
+        # Lee el archivo CSV usando pandas
+        self.df = pd.read_csv(filename)
+        self.df.columns = self.df.loc[2, :].to_list()  # la fila 2 como fila
+        self.df = self.df.loc[4:, :]   # Obtener desde la fila 4 en adelante
+        return self.df
+
+    def process_data(self,filename = "temp_sheet.csv"):
+        df = pd.DataFrame()
+        df = self.read_csv(filename)
+        #self.df = df.copy(deep=True)
 
         # Realiza el procesamiento necesario
         # Este es un lugar para incluir toda la lógica de procesamiento
@@ -79,7 +75,7 @@ class GoogleSheetProcessor:
         df_action = pd.DataFrame()  # Placeholder
         df_speciality = pd.DataFrame()  # Placeholder
         filtered_data = pd.DataFrame()  # Placeholder
-                      
+
         ## convertir a booleano
         df[list(self.valores.keys())] = df[self.valores.keys()].applymap(lambda x: True if x == 'TRUE' else False)
         # Obtener la unidades
@@ -96,8 +92,6 @@ class GoogleSheetProcessor:
         # Mantener solo las columnas necesarias
         columns = ['Plan','Accion','Trabajo','Actividad','Tipo','Parada','Relevancia','Especialidad','valor','unidad']
         df = df[columns]
-
-        # %%
         # Crear la nueva columna fk_activity que tendra relaciones con las actividades padre
         df['fk_activity']= None
         df['fkc_regime']= None
@@ -115,21 +109,16 @@ class GoogleSheetProcessor:
             'Parada': 'stoppage',
         }
         df.rename(columns=nuevos_nombres, inplace=True)
-
-
-        # %%
-        # Mantener las columnas del excel en el orden indicado
+                # Mantener las columnas del excel en el orden indicado
         columnas_excel = ['fk_activity','fk_plan','fk_action','name','fkc_activity_type','fkc_priority','fk_specialty','fkc_regime','stoppage','time_interval_value','fk_periodicity_unit'] 
 
         df = df[columnas_excel]
-
-        # %%
         df_plan = self.get_unique(df,"fk_plan")
         df_action = self.get_unique(df,"fk_action")
         df_speciality = self.get_unique(df,"fk_specialty")
+        #df_activity_type = self.get_unique(df,"fkc_activity_type")
+        #df_regime = self.get_unique(df,"fkc_regime")
 
-
-        # %%
         # Filter the data
         #df = df_raw.copy(deep=True)
         filtered_data = df[(df['fkc_activity_type'] == 'Actividad') | (df['fkc_activity_type'] == 'Tarea')]
@@ -144,13 +133,13 @@ class GoogleSheetProcessor:
                 parent_index = i
             elif row['fkc_activity_type'] == 'Tarea':
                 filtered_data.at[i, 'fk_activity'] = parent_index
-        filtered_data
+        #filtered_data
 
+        filtered_data['fk_plan']= filtered_data['fk_plan'].apply(lambda x: self.buscarIndice(df_plan,x)) 
 
-        # %%
-        filtered_data
 
         return df_plan, df_action, df_speciality, filtered_data
+
 
     def save_to_excel(self, output_path):
         df_plan, df_action, df_speciality, filtered_data = self.process_data()
@@ -162,9 +151,6 @@ class GoogleSheetProcessor:
 
 
 # Uso de la clase en otro módulo
-if __name__ == "__main__":
-    processor = GoogleSheetProcessor('https://docs.google.com/spreadsheets/d/1OkECu7qNfGZxX_rc2RDbaz0A-oE_gUwJ0P2tjU_x-q0/edit?gid=1199302294#gid=1199302294')
-    processor.download_csv(output_filename="temp.csv")
-
-    processor.process_data()
-    processor.save_to_excel('output.xlsx')
+#if __name__ == "__main__":bb
+    #processor = GoogleSheetProcessor('URL_DE_LA_HOJA_DE_CALCULO')
+    #processor.save_to_excel('output.xlsx')
