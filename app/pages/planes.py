@@ -1,8 +1,23 @@
 import dash
-from dash import dcc, html, callback
+
+from dash import dash_table
+from dash import dcc  #import dash_core_components as dcc
+from dash import html #import dash_html_components as html
+# import dash_bootstrap_components as dbc
+from dash import dcc, html
+
+from pathlib import Path
+import pandas as pd
+from docxtpl import DocxTemplate
+from num2words import num2words
+
+
 from dash.dependencies import Input, Output, State
 import base64
 import os
+from docxtpl import DocxTemplate
+
+from pages.reportgenerator import *
 
 
 # Definir la función handle_uploads
@@ -35,6 +50,7 @@ layout = html.Div([
     html.Div(id='output-state-2', style={'marginTop': 20})
 ])
 
+
 # Callback para actualizar el estado del botón y manejar la subida del archivo
 @callback(
     [Output('generate-button-2', 'disabled'),
@@ -50,4 +66,15 @@ def update_button_state(contents, filename):
 
 
 
+
+
+@callback(
+    [Output('generate-button-2', 'disabled'),
+     Output('output-state-2', 'children')],
+    Input('upload-excel-2', 'contents')
+)
+def update_button_state(contents):
+    if contents:        
+        return False, "Archivo subido exitosamente."
+    return True, ""
 

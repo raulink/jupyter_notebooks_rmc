@@ -1,4 +1,5 @@
 import dash
+
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
 import pandas as pd
@@ -40,19 +41,50 @@ class FileHandler:
 file_handler = FileHandler()
 
 layout2 = html.Div([
+=======
+from dash import dcc, html, callback
+from dash.dependencies import Input, Output, State
+import base64
+import os
+
+# Definir la función handle_uploads
+def handle_uploads(excel_contents, excel_filename):
+    messages = []
+    if excel_contents:
+        content_type, content_string = excel_contents.split(',')
+        decoded = base64.b64decode(content_string)
+        if not os.path.exists('temp'):
+            os.makedirs('temp')
+        path = os.path.join('temp', excel_filename)
+        with open(path, 'wb') as f:
+            f.write(decoded)
+        messages.append(f"Archivo Excel {excel_filename} subido exitosamente.")
+    return messages
+
+# Layout de la aplicación
+layout = html.Div([
+
     html.H1("Sistema de Contrataciones"),
     
     dcc.Upload(
         id='upload-excel-2',
         children=html.Button('Subir Archivo Excel'),
+
         style={'width': '100%', 'height': '70px', 'lineHeight': '60px', 'borderWidth': '1px', 'borderStyle': 'dashed', 'borderRadius': '5px', 'textAlign': 'center', 'margin': '10px'}
     ),
     
     html.Button("Generar Documento", id="generate-button-2", n_clicks=0, disabled=True),
     dcc.Download(id="download-docx-2"),
+        style={'width': '100%', 'height': '70px', 'lineHeight': '60px', 'borderWidth': '1px', 'borderStyle': 'dashed', 'borderRadius': '5px', 'textAlign': 'center', 'margin': '10px'},
+        multiple=False
+    ),
+    
+    html.Button("Generar Documento", id="generate-button-2", n_clicks=0, disabled=True),
+
     
     html.Div(id='output-state-2', style={'marginTop': 20})
 ])
+
 
 app.layout = layout2
 
@@ -80,3 +112,16 @@ def generate_document(n_clicks, contents, filename):
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+
+# Callback para actualizar el estado del botón y manejar la subida del archivo
+@callback(
+    [Output('generate-button-2', 'disabled'),
+     Output('output-state-2', 'children')],
+    [Input('upload-excel-2', 'contents')],
+    [State('upload-excel-2', 'filename')]
+)
+def update_button_state(contents, filename):
+    if contents:
+        messages = handle_uploads(contents, filename)
+        return False, " ".join(messages)
+    return True, ""

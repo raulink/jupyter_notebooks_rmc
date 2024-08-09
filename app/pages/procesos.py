@@ -7,10 +7,11 @@ import os
 from dash.dependencies import State
 import dash_bootstrap_components as dbc
 
+
 # Asegúrate de que este import sea correcto según la ubicación de tu clase
 from planes.googleSheetProcesor import GoogleSheetProcessor
 
-from pages.reportgenerator import *
+# from pages.reportgenerator import *
 
 
 
