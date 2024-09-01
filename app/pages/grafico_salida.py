@@ -1,8 +1,9 @@
 import pandas as pd
 from sqlalchemy import create_engine
 import plotly.express as px
-from dash import Dash, dcc, html,callback
+from dash import Dash, dcc, html, callback
 from dash.dependencies import Input, Output
+import dash_bootstrap_components as dbc
 
 # Conéctate a la base de datos MySQL
 engine = create_engine('mysql+pymysql://mantto:Sistemas0,@192.168.100.50/Catalogo')
@@ -19,81 +20,106 @@ df['partida_presupuestaria'] = df['partida_presupuestaria'].fillna('')
 df['ubicacion'] = df['ubicacion'].fillna('')
 
 # Crear la aplicación Dash
-app = Dash(__name__)
-
-# Obtener las fechas mínima y máxima
-fecha_min = df['fecha_salida'].min()
-fecha_max = df['fecha_salida'].max()
-
-# Crear una paleta de colores personalizada para las ubicaciones
-color_discrete_map = {
-    "LINEA AMARILLA": "yellow",
-    "LINEA ROJA": "red",
-    "LINEA VERDE": "green",
-    "LINEA AZUL": "blue",
-    "LINEA NARANJA": "orange",
-    "LINEA BLANCA": "black",
-    "LINEA CELESTE": "lightblue",
-    "LINEA MORADA": "purple",
-    "LINEA CAFE": "brown",
-    "LINEA PLATEADA": "silver"
-}
+app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 # Crear el layout de la aplicación
 layout = html.Div([
-    # Comboboxes para filtros
-    dcc.Dropdown(
-        id='codigo-item-dropdown2',
-        options=[
-            {'label': str(item), 'value': item} for item in df['codigo_item'].unique()
-        ],
-        placeholder='Selecciona un código de item',
-        style={'margin-bottom': '10px'}
-    ),
-    dcc.Dropdown(
-        id='descripcion-dropdown2',
-        options=[
-            {'label': str(desc), 'value': desc} for desc in df['descripcion'].unique()
-        ],
-        placeholder='Selecciona una descripción',
-        style={'margin-bottom': '10px'}
-    ),
-    dcc.Dropdown(
-        id='anio-dropdown2',
-        options=[
-            {'label': str(anio), 'value': str(anio)} for anio in df['fecha_salida'].dt.year.unique()
-        ],
-        placeholder='Selecciona un año',
-        style={'margin-bottom': '10px'}
-    ),
-    dcc.Dropdown(
-        id='clasificacion-trabajo-dropdown',
-        options=[
-            {'label': str(clas), 'value': clas} for clas in df['clasificacion_trabajo'].unique()
-        ],
-        placeholder='Selecciona una clasificación de trabajo',
-        style={'margin-bottom': '10px'}
-    ),
-    dcc.Dropdown(
-        id='partida-presupuestaria-dropdown',
-        options=[
-            {'label': str(partida), 'value': partida} for partida in df['partida_presupuestaria'].unique()
-        ],
-        placeholder='Selecciona una partida presupuestaria',
-        style={'margin-bottom': '10px'}
-    ),
-    # Espacio para mostrar el gráfico
-    dcc.Graph(id='line-chart2'),
-    # Range Slider para seleccionar un rango de fechas
-    
-    # Etiquetas para mostrar la suma de cantidades y el precio unitario máximo
-    html.Div([
-        html.P(id='suma-cantidad-label2', style={'font-weight': 'bold'}),
-        html.P(id='precio-unitario-maximo-label2', style={'font-weight': 'bold'}),
-    ])
+    dbc.Container([
+        dbc.Row([
+            dbc.Col([
+                dbc.Label("Código de Item"),
+                dcc.Dropdown(
+                    id='codigo-item-dropdown2',
+                    options=[{'label': str(item), 'value': item} for item in df['codigo_item'].unique()],
+                    placeholder='Selecciona un código de item',
+                    style={'margin-bottom': '7px'}
+                ),
+            ], width=2),
+            dbc.Col([
+                dbc.Label("Descripción"),
+                dcc.Dropdown(
+                    id='descripcion-dropdown2',
+                    options=[{'label': str(desc), 'value': desc} for desc in df['descripcion'].unique()],
+                    placeholder='Selecciona una descripción',
+                    style={'margin-bottom': '7px'}
+                ),
+            ], width=2),
+            dbc.Col([
+                dbc.Label("Clasificación de Trabajo"),
+                dcc.Dropdown(
+                    id='clasificacion-trabajo-dropdown',
+                    options=[{'label': str(clas), 'value': clas} for clas in df['clasificacion_trabajo'].unique()],
+                    placeholder='Selecciona una clasificación de trabajo',
+                    style={'margin-bottom': '7px'}
+                ),
+            ], width=2),
+            dbc.Col([
+                dbc.Label("Año"),
+                dcc.Dropdown(
+                    id='anio-dropdown2',
+                    options=[{'label': str(anio), 'value': str(anio)} for anio in df['fecha_salida'].dt.year.unique()],
+                    placeholder='Selecciona un año',
+                    style={'margin-bottom': '7px'}
+                ),
+            ], width=2),
+            dbc.Col([
+                dbc.Label("Partida Presupuestaria"),
+                dcc.Dropdown(
+                    id='partida-presupuestaria-dropdown',
+                    options=[{'label': str(partida), 'value': partida} for partida in df['partida_presupuestaria'].unique()],
+                    placeholder='Selecciona una partida presupuestaria',
+                    style={'margin-bottom': '7px'}
+                ),
+            ], width=2),
+            dbc.Col([
+                dbc.Label("Tipo de Gráfico"),
+                dcc.Dropdown(
+                    id='tipo-grafico-dropdown',
+                    options=[
+                        {'label': 'Gráfico de barras apiladas', 'value': 'bar_stack'},
+                        {'label': 'Gráfico de columnas apiladas', 'value': 'bar_stack_col'},
+                        {'label': 'Gráfico de barras agrupadas', 'value': 'bar_group'},
+                        {'label': 'Gráfico de columnas agrupadas', 'value': 'bar_group_col'},
+                        {'label': 'Gráfico de líneas', 'value': 'line'},
+                        {'label': 'Gráfico de cintas', 'value': 'funnel'},
+                        {'label': 'Gráfico circular', 'value': 'pie'},
+                        {'label': 'Gráfico de anillos', 'value': 'donut'},
+                        {'label': 'Gráfico de área', 'value': 'area'}
+                    ],
+                    placeholder='Selecciona un tipo de gráfico',
+                    style={'margin-bottom': '7px'}
+                ),
+            ], width=2),
+            
+        ]),
+        
+        dbc.Row([
+            dbc.Col([
+                dcc.Graph(id='line-chart2'),
+            ]),
+        ]),
+        dbc.Row([
+            dbc.Col([
+                html.P(id='suma-cantidad-label2', style={'font-weight': 'bold'}),
+                html.P(id='precio-unitario-maximo-label2', style={'font-weight': 'bold'}),
+            ]),
+            dbc.Col([
+                dbc.Label("Rango de Fechas"),
+                dcc.DatePickerRange(
+                    id='date-picker-range2',
+                    min_date_allowed=df['fecha_salida'].min().date(),
+                    max_date_allowed=df['fecha_salida'].max().date(),
+                    start_date=df['fecha_salida'].min().date(),
+                    end_date=df['fecha_salida'].max().date(),
+                    display_format='YYYY-MM-DD',
+                    style={'margin-bottom': '10px'}
+                ),
+            ], width=6),
+        ]),
+    ], fluid=True),
 ])
 
-# Callback para actualizar el gráfico y las etiquetas según los valores seleccionados en los comboboxes y el range slider
+# Callback para actualizar el gráfico y las etiquetas según los valores seleccionados en los comboboxes y el datepicker range
 @callback(
     [
         Output('line-chart2', 'figure'),
@@ -103,23 +129,24 @@ layout = html.Div([
     [
         Input('codigo-item-dropdown2', 'value'),
         Input('descripcion-dropdown2', 'value'),
-        Input('anio-dropdown2', 'value'),
+        Input('date-picker-range2', 'start_date'),
+        Input('date-picker-range2', 'end_date'),
         Input('clasificacion-trabajo-dropdown', 'value'),
         Input('partida-presupuestaria-dropdown', 'value'),
+        Input('tipo-grafico-dropdown', 'value')
     ]
 )
-def update_graph_and_labels(codigo_item, descripcion, anio, clasificacion_trabajo, partida_presupuestaria):
-    # Filtrar datos según los valores seleccionados en los comboboxes
+def update_graph_and_labels(codigo_item, descripcion, start_date, end_date, clasificacion_trabajo, partida_presupuestaria, tipo_grafico):
+    # Filtrar datos según los valores seleccionados en los comboboxes y el rango de fechas
     df_filtrado = df.copy()
-    
+
     # Filtrar datos según los valores seleccionados
     if codigo_item:
         df_filtrado = df_filtrado[df_filtrado['codigo_item'] == codigo_item]
     if descripcion:
         df_filtrado = df_filtrado[df_filtrado['descripcion'] == descripcion]
-    if anio:
-        anio = int(float(anio))
-        df_filtrado = df_filtrado[df_filtrado['fecha_salida'].dt.year == anio]
+    if start_date and end_date:
+        df_filtrado = df_filtrado[(df_filtrado['fecha_salida'] >= start_date) & (df_filtrado['fecha_salida'] <= end_date)]
     if clasificacion_trabajo:
         df_filtrado = df_filtrado[df_filtrado['clasificacion_trabajo'] == clasificacion_trabajo]
     if partida_presupuestaria:
@@ -129,10 +156,31 @@ def update_graph_and_labels(codigo_item, descripcion, anio, clasificacion_trabaj
     df_agrupado = df_filtrado.groupby([df_filtrado['fecha_salida'].dt.to_period('M'), 'ubicacion'])['cantidad'].sum().reset_index()
     df_agrupado['fecha_salida'] = df_agrupado['fecha_salida'].astype(str)
 
-    # Crear gráfico de línea usando Plotly
-    fig = px.line(df_agrupado, x='fecha_salida', y='cantidad', title='Cantidad por fecha de salida', color='ubicacion', color_discrete_map=color_discrete_map, markers=True)
+    # Crear gráfico según el tipo seleccionado
+    if tipo_grafico == 'bar_stack':
+        fig = px.bar(df_agrupado, x='fecha_salida', y='cantidad', color='ubicacion', title='Cantidad por fecha de salida', text='cantidad', labels={'cantidad': 'Cantidad'})
+    elif tipo_grafico == 'bar_stack_col':
+        fig = px.bar(df_agrupado, x='fecha_salida', y='cantidad', color='ubicacion', title='Cantidad por fecha de salida', text='cantidad', labels={'cantidad': 'Cantidad'}, barmode='stack')
+    elif tipo_grafico == 'bar_group':
+        fig = px.bar(df_agrupado, x='fecha_salida', y='cantidad', color='ubicacion', title='Cantidad por fecha de salida', text='cantidad', labels={'cantidad': 'Cantidad'}, barmode='group')
+    elif tipo_grafico == 'bar_group_col':
+        fig = px.bar(df_agrupado, x='fecha_salida', y='cantidad', color='ubicacion', title='Cantidad por fecha de salida', text='cantidad', labels={'cantidad': 'Cantidad'}, barmode='group')
+    elif tipo_grafico == 'line':
+        fig = px.line(df_agrupado, x='fecha_salida', y='cantidad', title='Cantidad por fecha de salida', color='ubicacion', markers=True)
+    elif tipo_grafico == 'funnel':
+        fig = px.funnel(df_agrupado, x='fecha_salida', y='cantidad', title='Cantidad por fecha de salida', color='ubicacion')
+    elif tipo_grafico == 'pie':
+        fig = px.pie(df_agrupado, names='ubicacion', values='cantidad', title='Cantidad por ubicación')
+    elif tipo_grafico == 'donut':
+        fig = px.pie(df_agrupado, names='ubicacion', values='cantidad', title='Cantidad por ubicación', hole=0.4)
+    elif tipo_grafico == 'area':
+        fig = px.area(df_agrupado, x='fecha_salida', y='cantidad', color='ubicacion', title='Cantidad por fecha de salida')
+    else:
+        # Default to line chart if no type selected
+        fig = px.area(df_agrupado, x='fecha_salida', y='cantidad', color='ubicacion', title='Cantidad por fecha de salida')
+
     fig.update_layout(height=600)
-    
+
     # Calcular la suma de cantidades
     suma_cantidad = df_filtrado['cantidad'].sum()
     
@@ -142,6 +190,9 @@ def update_graph_and_labels(codigo_item, descripcion, anio, clasificacion_trabaj
     # Formatear los resultados como cadenas de texto para mostrarlos en las etiquetas
     suma_cantidad_label = f"Suma de cantidades: {suma_cantidad}"
     precio_unitario_maximo_label = f"Precio unitario máximo: {precio_unitario_maximo}"
-    
-    # Retornar el gráfico y las etiquetas de resultados
+
     return fig, suma_cantidad_label, precio_unitario_maximo_label
+
+
+if __name__ == '__main__':
+    app.run_server(debug=True, port=8050)
