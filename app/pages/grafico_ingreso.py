@@ -1,10 +1,13 @@
 import os
-from dash import Dash, dcc, html, Input, Output, callback
-import dash_bootstrap_components as dbc  # Importar dash-bootstrap-components
+from dash import Dash, dcc, html, Input, Output, State, callback
+import dash_bootstrap_components as dbc
 import plotly.express as px
 from dotenv import load_dotenv
 import pandas as pd
 from sqlalchemy import create_engine
+import io
+import plotly.io as pio
+import plotly.graph_objects as go
 
 # Cargar las variables de entorno desde el archivo .env
 load_dotenv()
@@ -32,13 +35,16 @@ codigo_item_options = [{'label': item, 'value': item} for item in df['codigo_ite
 descripcion_options = [{'label': desc, 'value': desc} for desc in df['descripcion'].unique()]
 anio_options = [{'label': str(anio), 'value': anio} for anio in df['fecha_ingreso'].dt.year.unique()]
 
+# Crear la aplicación Dash
+app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+
 # Agregar el selector de tipo de gráfico en el diseño
 layout = dbc.Container([
     dbc.Row([
         dbc.Col([
             dbc.Label("Código de Ítem"),
             dcc.Dropdown(
-                id='codigo-item-dropdown',
+                id='codigo-item-dropdown1',
                 options=codigo_item_options,
                 placeholder='Selecciona un código de ítem',
                 style={'margin-bottom': '10px'}
@@ -47,7 +53,7 @@ layout = dbc.Container([
         dbc.Col([
             dbc.Label("Descripción"),
             dcc.Dropdown(
-                id='descripcion-dropdown',
+                id='descripcion-dropdown1',
                 options=descripcion_options,
                 placeholder='Selecciona una descripción',
                 style={'margin-bottom': '10px'}
@@ -56,7 +62,7 @@ layout = dbc.Container([
         dbc.Col([
             dbc.Label("Año"),
             dcc.Dropdown(
-                id='anio-dropdown',
+                id='anio-dropdown1',
                 options=anio_options,
                 placeholder='Selecciona un año',
                 style={'margin-bottom': '10px'}
@@ -65,7 +71,7 @@ layout = dbc.Container([
         dbc.Col([
             dbc.Label("Tipo de Gráfico"),
             dcc.Dropdown(
-                id='tipo-grafico-dropdown',
+                id='tipo-grafico-dropdown1',
                 options=[
                     {'label': 'Gráfico de Barras Apiladas', 'value': 'barras_apiladas'},
                     {'label': 'Gráfico de Columnas Apiladas', 'value': 'columnas_apiladas'},
@@ -75,7 +81,7 @@ layout = dbc.Container([
                     {'label': 'Gráfico de Cintas', 'value': 'cintas'},
                     {'label': 'Gráfico Circular', 'value': 'circular'},
                     {'label': 'Gráfico de Anillos', 'value': 'anillos'},
-                    {'label': 'Gráfico de Area', 'value': 'area'}
+                    {'label': 'Gráfico de Área', 'value': 'area'}
                 ],
                 placeholder='Selecciona un tipo de gráfico',
                 style={'margin-bottom': '10px'}
@@ -84,18 +90,30 @@ layout = dbc.Container([
     ]),
     dbc.Row([
         dbc.Col([
+            dcc.Graph(
+                id='descripcion-imagen1', 
+                config={'displayModeBar': False},
+                style={'display': 'flex', 'justify-content': 'center',  'align-items': 'center',  'height': '20vh'}
+            ),
+        ], width=12),
+    ]),
+    dbc.Row([
+        dbc.Col([
             dcc.Graph(id='line-chart1'),
         ])
     ]),
     dbc.Row([
         dbc.Col([
-            html.P(id='suma-cantidad-label', style={'font-weight': 'bold'}),
-            html.P(id='precio-unitario-maximo-label', style={'font-weight': 'bold'})
+            html.P(id='suma-cantidad-label1', style={'font-weight': 'bold'}),
+            html.P(id='precio-unitario-maximo-label1', style={'font-weight': 'bold'})
+        ], width=5),
+        dbc.Col([
+            html.Button('Exportar a PDF', id='export-pdf-button1', n_clicks=0)
         ]),
         dbc.Col([
             dbc.Label("Rango de Fechas"),
             dcc.DatePickerRange(
-                id='date-picker-range2',
+                id='date-picker-range1',
                 min_date_allowed=df['fecha_ingreso'].min().date(),
                 max_date_allowed=df['fecha_ingreso'].max().date(),
                 start_date=df['fecha_ingreso'].min().date(),
@@ -103,12 +121,10 @@ layout = dbc.Container([
                 display_format='YYYY-MM-DD',
                 style={'margin-bottom': '10px'}
             ),
-        ], width=6),
-        
-    ])
-    
+        ], width=5),
+        dcc.Download(id='download-pdf1')    
+    ]),
 ], fluid=True)
-
 
 # Crear gráfico inicial sin filtro
 fig = px.line(df, x='fecha_ingreso', y='cantidad', title='Cantidad por fecha de ingreso', markers=True)
@@ -117,16 +133,16 @@ fig = px.line(df, x='fecha_ingreso', y='cantidad', title='Cantidad por fecha de 
 @callback(
     [
         Output('line-chart1', 'figure'),
-        Output('suma-cantidad-label', 'children'),
-        Output('precio-unitario-maximo-label', 'children')
+        Output('suma-cantidad-label1', 'children'),
+        Output('precio-unitario-maximo-label1', 'children')
     ],
     [
-        Input('codigo-item-dropdown', 'value'),
-        Input('descripcion-dropdown', 'value'),
-        Input('date-picker-range2', 'start_date'),
-        Input('date-picker-range2', 'end_date'),
-        Input('anio-dropdown', 'value'),
-        Input('tipo-grafico-dropdown', 'value')  # Nuevo input para el tipo de gráfico
+        Input('codigo-item-dropdown1', 'value'),
+        Input('descripcion-dropdown1', 'value'),
+        Input('date-picker-range1', 'start_date'),
+        Input('date-picker-range1', 'end_date'),
+        Input('anio-dropdown1', 'value'),
+        Input('tipo-grafico-dropdown1', 'value')  # Nuevo input para el tipo de gráfico
     ]
 )
 def update_graph(codigo_item, descripcion, start_date, end_date, anio, tipo_grafico):
@@ -174,27 +190,82 @@ def update_graph(codigo_item, descripcion, start_date, end_date, anio, tipo_graf
         fig = px.area(df_filtrado, x='fecha_ingreso', y='cantidad', color='ubicacion', title='Cantidad por fecha de ingreso')
     
     else:
-        # Default to line chart if no type selected
+        # Gráfico por defecto (si no se selecciona tipo)
         fig = px.line(df_filtrado, x='fecha_ingreso', y='cantidad', title='Cantidad por fecha de ingreso', markers=True)
-
-    # Calcular la suma de cantidades
+        
+    # Sumar la cantidad total y calcular el precio unitario máximo
     suma_cantidad = df_filtrado['cantidad'].sum()
+    precio_unitario_maximo = df_filtrado['precio_unitario'].max()
+    
+    return fig, f"Suma de Cantidad: {suma_cantidad}", f"Precio Unitario Máximo: {precio_unitario_maximo}"
 
-    # Calcular el precio unitario máximo si existe la columna 'precio_unitario'
-    if 'precio_unitario' in df_filtrado.columns:
-        precio_unitario_maximo = df_filtrado['precio_unitario'].max()
+# Callback para generar la imagen con el texto
+@callback(
+    Output('descripcion-imagen1', 'figure'),
+    [Input('codigo-item-dropdown1', 'value'),
+     Input('descripcion-dropdown1', 'value')]
+)
+def generate_image(codigo_item, descripcion):
+    # Inicializar el DataFrame filtrado
+    df_filtrado = df.copy()
+
+    # Filtrar el DataFrame según el código de ítem seleccionado
+    if codigo_item:
+        df_filtrado = df_filtrado[df_filtrado['codigo_item'] == codigo_item]
+    
+    # Filtrar el DataFrame según la descripción seleccionada (si no hay código de ítem)
+    elif descripcion:
+        df_filtrado = df_filtrado[df_filtrado['descripcion'] == descripcion]
+
+    # Verificar si hay datos después de filtrar
+    if not df_filtrado.empty:
+        codigo_item = df_filtrado['codigo_item'].iloc[0]
+        descripcion_value = df_filtrado['descripcion'].iloc[0]
+        codigo_partida = df_filtrado['codigo_partida'].iloc[0]
+        partida_presupuestaria = df_filtrado['partida_presupuestaria'].iloc[0]
     else:
-        precio_unitario_maximo = None
+        codigo_item = 'Descripción no encontrada'
+        descripcion_value = 'Descripción no encontrada'
+        codigo_partida = 'Código de partida no encontrado'
+        partida_presupuestaria = 'Partida presupuestaria no encontrada'
 
-    # Formatear los resultados como cadenas de texto para mostrarlos en las etiquetas
-    suma_cantidad_label = f"Suma de cantidades: {suma_cantidad}"
-    precio_unitario_maximo_label = f"Precio unitario máximo: {precio_unitario_maximo}" if precio_unitario_maximo else "Precio unitario máximo: N/A"
+    # Crear la imagen con el texto utilizando Plotly
+    fig = go.Figure()
 
-    # Retornar el gráfico y las etiquetas de resultados
-    return fig, suma_cantidad_label, precio_unitario_maximo_label
-# Código principal de la aplicación
+    fig.add_annotation(
+        text=f"Código de Item: {codigo_item}<br>Descripción: {descripcion_value}<br>Código de Partida: {codigo_partida}<br>Partida Presupuestaria: {partida_presupuestaria}",
+        xref="paper", yref="paper",
+        font=dict(size=20),
+        showarrow=False,
+        x=0.5, y=0.5,
+        xanchor='center', yanchor='middle'
+    )
+
+    fig.update_layout(
+        title="Información del Código de Ítem",
+        xaxis=dict(visible=False),
+        yaxis=dict(visible=False),
+        margin=dict(l=0, r=0, t=50, b=0),
+        paper_bgcolor='rgba(0,0,0,0)',  # Fondo transparente para el gráfico
+        plot_bgcolor='rgba(0,0,0,0)',   # Fondo transparente para la trama
+    )
+
+    return fig
+
+@callback(
+    Output('download-pdf1', 'data'),
+    [Input('export-pdf-button1', 'n_clicks')],
+    [State('line-chart1', 'figure')]
+)
+def export_to_pdf(n_clicks, fig):
+    if n_clicks > 0:
+        if fig:
+            # Convertir el gráfico a PDF
+            buffer = io.BytesIO()
+            pio.write_image(fig, buffer, format='pdf')
+            buffer.seek(0)
+            return dcc.send_bytes(buffer.getvalue(), 'grafico.pdf')
+    return None
+
 if __name__ == '__main__':
-    external_stylesheets = [dbc.themes.BOOTSTRAP]  # Usar un tema de Bootstrap
-    app = Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=True)
-    app.layout = layout
-    app.run_server(debug=False, host='0.0.0.0', port=8080)
+    app.run_server(debug=True, port=8050)

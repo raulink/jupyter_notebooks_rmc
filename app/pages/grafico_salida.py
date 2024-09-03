@@ -1,9 +1,16 @@
 import pandas as pd
 from sqlalchemy import create_engine
 import plotly.express as px
-from dash import Dash, dcc, html, callback
+from dash import Dash, dcc, html, Input, Output, State, callback
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
+import io
+import plotly.io as pio
+from dotenv import load_dotenv
+import plotly.graph_objects as go
+
+# Cargar las variables de entorno desde el archivo .env
+load_dotenv()
 
 # Conéctate a la base de datos MySQL
 engine = create_engine('mysql+pymysql://mantto:Sistemas0,@192.168.100.50/Catalogo')
@@ -47,7 +54,7 @@ layout = html.Div([
             dbc.Col([
                 dbc.Label("Clasificación de Trabajo"),
                 dcc.Dropdown(
-                    id='clasificacion-trabajo-dropdown',
+                    id='clasificacion-trabajo-dropdown2',
                     options=[{'label': str(clas), 'value': clas} for clas in df['clasificacion_trabajo'].unique()],
                     placeholder='Selecciona una clasificación de trabajo',
                     style={'margin-bottom': '7px'}
@@ -65,7 +72,7 @@ layout = html.Div([
             dbc.Col([
                 dbc.Label("Partida Presupuestaria"),
                 dcc.Dropdown(
-                    id='partida-presupuestaria-dropdown',
+                    id='partida-presupuestaria-dropdown2',
                     options=[{'label': str(partida), 'value': partida} for partida in df['partida_presupuestaria'].unique()],
                     placeholder='Selecciona una partida presupuestaria',
                     style={'margin-bottom': '7px'}
@@ -74,7 +81,7 @@ layout = html.Div([
             dbc.Col([
                 dbc.Label("Tipo de Gráfico"),
                 dcc.Dropdown(
-                    id='tipo-grafico-dropdown',
+                    id='tipo-grafico-dropdown2',
                     options=[
                         {'label': 'Gráfico de barras apiladas', 'value': 'bar_stack'},
                         {'label': 'Gráfico de columnas apiladas', 'value': 'bar_stack_col'},
@@ -89,10 +96,17 @@ layout = html.Div([
                     placeholder='Selecciona un tipo de gráfico',
                     style={'margin-bottom': '7px'}
                 ),
-            ], width=2),
-            
+            ], width=2),  
         ]),
-        
+        dbc.Row([
+            dbc.Col([
+                dcc.Graph(
+                    id='descripcion-imagen2', 
+                    config={'displayModeBar': False},
+                    style={'display': 'flex', 'justify-content': 'center',  'align-items': 'center',  'height': '20vh'}
+                ),
+            ], width=12),
+        ]),
         dbc.Row([
             dbc.Col([
                 dcc.Graph(id='line-chart2'),
@@ -103,6 +117,9 @@ layout = html.Div([
                 html.P(id='suma-cantidad-label2', style={'font-weight': 'bold'}),
                 html.P(id='precio-unitario-maximo-label2', style={'font-weight': 'bold'}),
             ]),
+            dbc.Col([
+                html.Button('Exportar a PDF', id='export-pdf-button2', n_clicks=0)
+                ]),
             dbc.Col([
                 dbc.Label("Rango de Fechas"),
                 dcc.DatePickerRange(
@@ -116,8 +133,12 @@ layout = html.Div([
                 ),
             ], width=6),
         ]),
+        dcc.Download(id='download-pdf2')
     ], fluid=True),
 ])
+
+# Crear gráfico inicial sin filtro
+fig = px.line(df, x='fecha_salida', y='cantidad', title='Cantidad por fecha de salida', markers=True)
 
 # Callback para actualizar el gráfico y las etiquetas según los valores seleccionados en los comboboxes y el datepicker range
 @callback(
@@ -131,9 +152,9 @@ layout = html.Div([
         Input('descripcion-dropdown2', 'value'),
         Input('date-picker-range2', 'start_date'),
         Input('date-picker-range2', 'end_date'),
-        Input('clasificacion-trabajo-dropdown', 'value'),
-        Input('partida-presupuestaria-dropdown', 'value'),
-        Input('tipo-grafico-dropdown', 'value')
+        Input('clasificacion-trabajo-dropdown2', 'value'),
+        Input('partida-presupuestaria-dropdown2', 'value'),
+        Input('tipo-grafico-dropdown2', 'value')
     ]
 )
 def update_graph_and_labels(codigo_item, descripcion, start_date, end_date, clasificacion_trabajo, partida_presupuestaria, tipo_grafico):
@@ -193,6 +214,73 @@ def update_graph_and_labels(codigo_item, descripcion, start_date, end_date, clas
 
     return fig, suma_cantidad_label, precio_unitario_maximo_label
 
+# Callback para generar la imagen con el texto
+@callback(
+    Output('descripcion-imagen2', 'figure'),
+    [Input('codigo-item-dropdown2', 'value'),
+     Input('descripcion-dropdown2', 'value')]
+)
+def generate_image(codigo_item, descripcion):
+    # Inicializar el DataFrame filtrado
+    df_filtrado = df.copy()
+
+    # Filtrar el DataFrame según el código de ítem seleccionado
+    if codigo_item:
+        df_filtrado = df_filtrado[df_filtrado['codigo_item'] == codigo_item]
+    
+    # Filtrar el DataFrame según la descripción seleccionada (si no hay código de ítem)
+    elif descripcion:
+        df_filtrado = df_filtrado[df_filtrado['descripcion'] == descripcion]
+
+    # Verificar si hay datos después de filtrar
+    if not df_filtrado.empty:
+        codigo_item = df_filtrado['codigo_item'].iloc[0]
+        descripcion_value = df_filtrado['descripcion'].iloc[0]
+        codigo_partida = df_filtrado['codigo_partida'].iloc[0]
+        partida_presupuestaria = df_filtrado['partida_presupuestaria'].iloc[0]
+    else:
+        codigo_item = 'Descripción no encontrada'
+        descripcion_value = 'Descripción no encontrada'
+        codigo_partida = 'Código de partida no encontrado'
+        partida_presupuestaria = 'Partida presupuestaria no encontrada'
+
+    # Crear la imagen con el texto utilizando Plotly
+    fig = go.Figure()
+
+    fig.add_annotation(
+        text=f"Código de Item: {codigo_item}<br>Descripción: {descripcion_value}<br>Código de Partida: {codigo_partida}<br>Partida Presupuestaria: {partida_presupuestaria}",
+        xref="paper", yref="paper",
+        font=dict(size=20),
+        showarrow=False,
+        x=0.5, y=0.5,
+        xanchor='center', yanchor='middle'
+    )
+
+    fig.update_layout(
+        title="Información del Código de Ítem",
+        xaxis=dict(visible=False),
+        yaxis=dict(visible=False),
+        margin=dict(l=0, r=0, t=50, b=0),
+        paper_bgcolor='rgba(0,0,0,0)',  # Fondo transparente para el gráfico
+        plot_bgcolor='rgba(0,0,0,0)',   # Fondo transparente para la trama
+    )
+
+    return fig
+
+@callback(
+    Output('download-pdf2', 'data'),
+    [Input('export-pdf-button2', 'n_clicks')],
+    [State('line-chart2', 'figure')]
+)
+def export_to_pdf(n_clicks, fig):
+    if n_clicks > 0:
+        if fig:
+            # Convertir el gráfico a PDF
+            buffer = io.BytesIO()
+            pio.write_image(fig, buffer, format='pdf')
+            buffer.seek(0)
+            return dcc.send_bytes(buffer.getvalue(), 'grafico.pdf')
+    return None
 
 if __name__ == '__main__':
     app.run_server(debug=True, port=8050)
