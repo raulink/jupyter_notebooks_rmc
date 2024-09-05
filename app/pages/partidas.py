@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 
 # Leer el archivo de Excel
 excel_file = 'Partidas_20240826.120509.xlsx'
-df = pd.read_excel(excel_file, sheet_name='Partidas_20240826.120509', skiprows=0, usecols='A:H', nrows=423)
+df = pd.read_excel(excel_file, sheet_name='Partidas_20240826.120509', skiprows=0, usecols='A:E', nrows=423)
 
 # Convertir todas las columnas a cadenas de texto para asegurar el filtrado correcto
 df = df.astype(str)
@@ -33,14 +33,17 @@ layout = dbc.Container([
                 page_size=20,
                 filter_action='native',  # Habilitar el filtrado nativo
                 style_table={
+                    'font-family': 'Roboto, sans-serif',
                     'overflowX': 'auto',
-                    'minWidth': '100%',  # Asegura que la tabla ocupe todo el ancho disponible
+                    'minWidth': '100%',  # Asegura que la tabla ocupe todo el ancho disponible                    
                 },
                 style_header={
+                    'font-family': 'Roboto, sans-serif',
                     'backgroundColor': 'rgb(230, 230, 230)',
                     'fontWeight': 'bold'
                 },
                 style_cell={
+                    'font-family': 'Roboto, sans-serif',
                     'textAlign': 'left',
                     'padding': '5px',
                     'whiteSpace': 'normal',
