@@ -1,6 +1,6 @@
 from dash import Dash, dcc, html, Input, Output, State
 import dash_bootstrap_components as dbc
-from pages import dashboard, linearoja, partidas, grafico_ingreso, grafico_salida
+from pages import dashboard, linearoja, partidas, grafico_ingreso, grafico_salida, operaciones
 
 # Crear instancia de la aplicación Dash y agregar hoja de estilo CSS
 external_stylesheets = ["https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/morph/bootstrap.min.css"]
@@ -24,6 +24,7 @@ sidebar = dbc.Offcanvas(
                 dbc.NavLink("Partidas presupuestarias", href="/partidas", active="exact"),
                 dbc.NavLink("Gráfico de Ingresos", href="/grafico_ingreso", active="exact"),
                 dbc.NavLink("Gráfico de Salidas", href="/grafico_salida", active="exact"),
+                dbc.NavLink("Dashboard Operaciones", href="/operaciones", active="exact"),
             ],
             vertical=True,
             pills=True,
@@ -114,6 +115,8 @@ def display_page(pathname):
         return grafico_ingreso.layout
     elif pathname == '/grafico_salida':
         return grafico_salida.layout
+    elif pathname == '/operaciones':
+        return operaciones.layout
     else:
         return dbc.Alert("404 - Página no encontrada", color="danger")
 

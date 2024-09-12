@@ -327,9 +327,13 @@ def query_horas_funcionamiento(linea, seccion, start_date, end_date):
         df = pd.read_sql(query, connection, params=(linea, seccion, start_date, end_date))
     return df
 
+STYLE_CENTER = {'textAlign': 'center'}
+
 # Layout de la aplicación con dropdowns y botones mejorados
 layout = html.Div([
     dbc.Container([
+        
+        html.H1('Dashboard Operaciones', style=STYLE_CENTER),
         dbc.Row([
             dbc.Col([
                 dcc.Dropdown(
