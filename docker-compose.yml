@@ -10,17 +10,17 @@ services:
     env_file:
       - .env
     depends_on:
-      - db
+      - local
     volumes:
       - ./app:/app
 
-  db:
+  local:
     image: postgres:latest
     ports:
       - "5460:5432"
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: mantto
+      POSTGRES_PASSWORD: Sistemas0
+      POSTGRES_DB: Catalogo
     volumes:
-      - ./app/db:/docker-entrypoint-initdb.d
+      - ./app/local:/docker-entrypoint-initlocal.d

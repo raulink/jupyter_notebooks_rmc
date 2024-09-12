@@ -29,4 +29,4 @@ RUN pip install -r requirements.txt
 RUN chmod +x /app/run.sh
 
 # Ejecutar run.sh
-CMD ["/app/run.sh"]
+CMD ["uvicorn", "--host" ,"0.0.0.0", "--port","8080","main:application","--reload"]
