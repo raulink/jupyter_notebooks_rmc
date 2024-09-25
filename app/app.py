@@ -1,6 +1,7 @@
 from dash import Dash, dcc, html, Input, Output, State
 import dash_bootstrap_components as dbc
-from pages import dashboard, linearoja, partidas, grafico_ingreso, grafico_salida, operaciones
+import dash_table
+from pages import dashboard, linearoja, partidas, grafico_ingreso, grafico_salida, operaciones, indicadoresDeTorres
 
 # Crear instancia de la aplicación Dash y agregar hoja de estilo CSS
 external_stylesheets = ["https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/morph/bootstrap.min.css"]
@@ -25,6 +26,17 @@ sidebar = dbc.Offcanvas(
                 dbc.NavLink("Gráfico de Ingresos", href="/grafico_ingreso", active="exact"),
                 dbc.NavLink("Gráfico de Salidas", href="/grafico_salida", active="exact"),
                 dbc.NavLink("Dashboard Operaciones", href="/operaciones", active="exact"),
+                
+                # Mover el DropdownMenu dentro del dbc.Nav
+                dbc.DropdownMenu(
+                    label="INDICADORES DE CONFIABILIDAD",
+                    children=[
+                        dbc.DropdownMenuItem("Indicadores de torres", href="/indicadoresDeTorres"),
+                    ],
+                    nav=True,
+                    in_navbar=False,  # Esto asegura que el menú esté en el sidebar y no en la navbar
+                    toggle_style={"width": "100%"},  # Ajustar el botón a todo el ancho
+                ),
             ],
             vertical=True,
             pills=True,
@@ -34,6 +46,7 @@ sidebar = dbc.Offcanvas(
     is_open=False,
     style={'background-color': '#f8f9fa', 'padding': '20px'}
 )
+
 
 # Crear la barra superior con un botón tipo "sandwich"
 navbar = dbc.Navbar(
@@ -117,6 +130,8 @@ def display_page(pathname):
         return grafico_salida.layout
     elif pathname == '/operaciones':
         return operaciones.layout
+    elif pathname == '/indicadoresDeTorres': 
+         return indicadoresDeTorres.layout
     else:
         return dbc.Alert("404 - Página no encontrada", color="danger")
 
