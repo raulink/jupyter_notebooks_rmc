@@ -6,7 +6,7 @@ from dash import dcc, html, Input, Output, callback
 import dash
 # Configuración para acceder a Google Sheetseste 
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name('yopi-434514-02cae6081f5c.json', scope)
+creds = ServiceAccountCredentials.from_json_keyfile_name('yopi-434514-87a5e5c3de06.json', scope)
 client = gspread.authorize(creds)
 
 # ID del documento de Google Sheets

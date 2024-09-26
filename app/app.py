@@ -1,6 +1,7 @@
 from dash import Dash, dcc, html, Input, Output, State
 import dash_bootstrap_components as dbc
 import dash_table
+from pages import procesos
 from pages import dashboard, linearoja, partidas, grafico_ingreso, grafico_salida, operaciones, indicadoresDeTorres
 
 # Crear instancia de la aplicación Dash y agregar hoja de estilo CSS
@@ -132,6 +133,9 @@ def display_page(pathname):
         return operaciones.layout
     elif pathname == '/indicadoresDeTorres': 
          return indicadoresDeTorres.layout
+    elif pathname == '/procesos': 
+         return procesos.layout
+     
     else:
         return dbc.Alert("404 - Página no encontrada", color="danger")
 
