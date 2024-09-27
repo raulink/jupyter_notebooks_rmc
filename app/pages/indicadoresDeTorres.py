@@ -135,7 +135,7 @@ def update_dashboard(selected_time, selected_categories):
 
             fig = px.bar(df_temp, x='Categoría', y='Porcentaje',
                          labels={'Categoría': 'Categoría', 'Porcentaje': 'Porcentaje'},
-                         title=f'Indicadores de torres {selected_time}',
+                         title=f'Indicadores De Tores{selected_time}',
                          color='Categoría',
                          color_discrete_map=color_dict
                         )
