@@ -1,8 +1,8 @@
 from dash import Dash, dcc, html, Input, Output, State
 import dash_bootstrap_components as dbc
-import dash_table
+from dash import dash_table
 from pages import procesos
-from pages import dashboard, linearoja, partidas, grafico_ingreso, grafico_salida, operaciones, indicadoresDeTorres
+from pages import dashboard, linearoja, partidas, grafico_ingreso, grafico_salida, operaciones, indicadoresDeTorres, indicadoresDeVehiculos,indicadoresSemestre
 
 # Crear instancia de la aplicación Dash y agregar hoja de estilo CSS
 external_stylesheets = ["https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/morph/bootstrap.min.css"]
@@ -33,6 +33,8 @@ sidebar = dbc.Offcanvas(
                     label="INDICADORES DE CONFIABILIDAD",
                     children=[
                         dbc.DropdownMenuItem("Indicadores De Torres", href="/indicadoresDeTorres"),
+                        dbc.DropdownMenuItem("Indicadores De Vehiculos", href="/indicadoresDeVehiculos"),
+                        dbc.DropdownMenuItem("Indicadores De Semestres", href="/indicadoresSemestre"),
                     ],
                     nav=True,
                     in_navbar=False,  # Esto asegura que el menú esté en el sidebar y no en la navbar
@@ -40,7 +42,7 @@ sidebar = dbc.Offcanvas(
                 ),
             ],
             vertical=True,
-            pills=True,
+            pills=True,  
         ),
     ],
     id="offcanvas-sidebar",
@@ -133,6 +135,10 @@ def display_page(pathname):
         return operaciones.layout
     elif pathname == '/indicadoresDeTorres': 
          return indicadoresDeTorres.layout
+    elif pathname == '/indicadoresDeVehiculos': 
+         return indicadoresDeVehiculos.layout
+    elif pathname == '/indicadoresSemestre': 
+         return indicadoresSemestre.layout
     elif pathname == '/procesos': 
          return procesos.layout
      

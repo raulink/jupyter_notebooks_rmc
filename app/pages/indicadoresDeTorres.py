@@ -84,8 +84,8 @@ rangos_periodo = {
     'TRIMESTRAL': {'filas': (6, 8), 'columnas': (29, 40)},      # AD7:AN8
     'BALANCÍN MECÁNICO': {'filas': (6, 8), 'columnas': (42, 53)},  # AQ7:BA8
     'BALANCÍN ELÉCTRICO': {'filas': (6, 8), 'columnas': (55, 66)}, # BD7:BN8
-    'ANUAL MECÁNICO': {'filas': (6, 8), 'columnas': (68, 77)},     # BQ7:CA8
-    'ANUAL ELÉCTRICO': {'filas': (6, 8), 'columnas': (79, 88)}     # CD7:CN8
+    'ANUAL MECÁNICO': {'filas': (6, 8), 'columnas': (68, 79)},     # BQ7:CA8
+    'ANUAL ELÉCTRICO': {'filas': (6, 8), 'columnas': (81, 92)}     # CD7:CN8
 }
 
 # Callback para actualizar las opciones del checklist basado en la selección de tiempo
@@ -135,7 +135,7 @@ def update_dashboard(selected_time, selected_categories):
 
             fig = px.bar(df_temp, x='Categoría', y='Porcentaje',
                          labels={'Categoría': 'Categoría', 'Porcentaje': 'Porcentaje'},
-                         title=f'Indicadores De Tores{selected_time}',
+                         title=f'Indicadores De Torres {selected_time}',
                          color='Categoría',
                          color_discrete_map=color_dict
                         )

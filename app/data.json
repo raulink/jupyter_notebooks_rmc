@@ -1,0 +1,816 @@
+{
+  "Roja": {
+    "Accionamiento": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Frenado": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Tensión del Cable Tractor": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos Electromecánicos de Estaciones": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Operación, Control y Seguridad": [
+      {
+        "Disponibilidad": 0.999911042240588,
+        "Confiabilidad": 0.780394325209861,
+        "MTBF": 120.989236111111,
+        "MTTA": "00:00:45",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Línea": [
+      {
+        "Disponibilidad": 0.99932621671258,
+        "Confiabilidad": 0.537808555686132,
+        "MTBF": 48.3673888888889,
+        "MTTA": "00:01:48",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Almacenamiento de Vehículos": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Suministros": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ]
+  },
+  "Amarilla": {
+    "Accionamiento": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Frenado": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Tensión del Cable Tractor": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos Electromecánicos de Estaciones": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Operación, Control y Seguridad": [
+      {
+        "Disponibilidad": 0.999661386593205,
+        "Confiabilidad": 0.608939881469164,
+        "MTBF": 60.4795138888889,
+        "MTTA": "00:01:06",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Línea": [
+      {
+        "Disponibilidad": 0.999864554637282,
+        "Confiabilidad": 0.830293851616425,
+        "MTBF": 161.311481481481,
+        "MTTA": "00:01:27",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Almacenamiento de Vehículos": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Suministros": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ]
+  },
+  "Verde": {
+    "Accionamiento": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Frenado": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Tensión del Cable Tractor": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos Electromecánicos de Estaciones": [
+      {
+        "Disponibilidad": 0.999793388429752,
+        "Confiabilidad": 0.883386412858896,
+        "MTBF": 241.95,
+        "MTTA": "00:03:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Operación, Control y Seguridad": [
+      {
+        "Disponibilidad": 0.99833849862259,
+        "Confiabilidad": 0.225354835077209,
+        "MTBF": 20.1331597222222,
+        "MTTA": "00:02:03",
+        "MTTR": "00:09:00"
+      }
+    ],
+    "Dispositivos de Línea": [
+      {
+        "Disponibilidad": 0.999420339761249,
+        "Confiabilidad": 0.47509853459728,
+        "MTBF": 40.3099537037037,
+        "MTTA": "00:01:24",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Almacenamiento de Vehículos": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Suministros": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ]
+  },
+  "Azul": {
+    "Accionamiento": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Frenado": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Tensión del Cable Tractor": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos Electromecánicos de Estaciones": [
+      {
+        "Disponibilidad": 0.999960973370064,
+        "Confiabilidad": 0.939896148467911,
+        "MTBF": 483.981111111111,
+        "MTTA": "00:01:08",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Operación, Control y Seguridad": [
+      {
+        "Disponibilidad": 0.996543273645546,
+        "Confiabilidad": 0.211197438723006,
+        "MTBF": 19.2930777777778,
+        "MTTA": "00:03:09",
+        "MTTR": "00:16:31"
+      }
+    ],
+    "Dispositivos de Línea": [
+      {
+        "Disponibilidad": 0.999960399449036,
+        "Confiabilidad": 0.939896115029777,
+        "MTBF": 483.980833333333,
+        "MTTA": "00:01:09",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Almacenamiento de Vehículos": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Suministros": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ]
+  },
+  "Naranja": {
+    "Accionamiento": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Frenado": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Tensión del Cable Tractor": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos Electromecánicos de Estaciones": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Operación, Control y Seguridad": [
+      {
+        "Disponibilidad": 0.999927112029385,
+        "Confiabilidad": 0.830303512138894,
+        "MTBF": 161.321574074074,
+        "MTTA": "00:00:57",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Línea": [
+      {
+        "Disponibilidad": 0.999687213039486,
+        "Confiabilidad": 0.647899262814798,
+        "MTBF": 69.1212301587302,
+        "MTTA": "00:01:17",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Almacenamiento de Vehículos": [
+      {
+        "Disponibilidad": 0.999894972451791,
+        "Confiabilidad": 0.939892302838619,
+        "MTBF": 483.949166666667,
+        "MTTA": "00:03:03",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Suministros": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ]
+  },
+  "Blanca": {
+    "Accionamiento": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Frenado": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Tensión del Cable Tractor": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos Electromecánicos de Estaciones": [
+      {
+        "Disponibilidad": 0.99987660697888,
+        "Confiabilidad": 0.830295712903271,
+        "MTBF": 161.313425925926,
+        "MTTA": "00:01:11",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Operación, Control y Seguridad": [
+      {
+        "Disponibilidad": 0.999988521579431,
+        "Confiabilidad": 0.939897753454631,
+        "MTBF": 483.994444444444,
+        "MTTA": "00:01:15",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Línea": [
+      {
+        "Disponibilidad": 0.999582185491276,
+        "Confiabilidad": 0.572304311799871,
+        "MTBF": 53.7553086419753,
+        "MTTA": "00:01:20",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Almacenamiento de Vehículos": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Suministros": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ]
+  },
+  "Celeste": {
+    "Accionamiento": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Frenado": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Tensión del Cable Tractor": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos Electromecánicos de Estaciones": [
+      {
+        "Disponibilidad": 0.999962121212121,
+        "Confiabilidad": 0.939896215344069,
+        "MTBF": 483.981666666667,
+        "MTTA": "00:01:06",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Operación, Control y Seguridad": [
+      {
+        "Disponibilidad": 0.999223484848485,
+        "Confiabilidad": 0.446457389901504,
+        "MTBF": 37.201858974359,
+        "MTTA": "00:01:46",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Línea": [
+      {
+        "Disponibilidad": 0.999568411386593,
+        "Confiabilidad": 0.689311914776744,
+        "MTBF": 80.6318518518519,
+        "MTTA": "00:02:05",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Almacenamiento de Vehículos": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Suministros": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ]
+  },
+  "Morada": {
+    "Accionamiento": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Frenado": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Tensión del Cable Tractor": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos Electromecánicos de Estaciones": [
+      {
+        "Disponibilidad": 0.999878328741965,
+        "Confiabilidad": 0.883395717836413,
+        "MTBF": 241.970555555556,
+        "MTTA": "00:01:46",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Operación, Control y Seguridad": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:01:14",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Línea": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Almacenamiento de Vehículos": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Suministros": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ]
+  },
+  "Cafe": {
+    "Accionamiento": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Frenado": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Tensión del Cable Tractor": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos Electromecánicos de Estaciones": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Operación, Control y Seguridad": [
+      {
+        "Disponibilidad": 0.999938016528926,
+        "Confiabilidad": 0.939894810913518,
+        "MTBF": 483.97,
+        "MTTA": "00:01:48",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Línea": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Almacenamiento de Vehículos": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Suministros": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ]
+  },
+  "Plateada": {
+    "Accionamiento": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Frenado": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Tensión del Cable Tractor": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos Electromecánicos de Estaciones": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Operación, Control y Seguridad": [
+      {
+        "Disponibilidad": 0.99996269513315,
+        "Confiabilidad": 0.939896248782092,
+        "MTBF": 483.981944444444,
+        "MTTA": "00:01:38",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Línea": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Almacenamiento de Vehículos": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Suministros": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "484",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ]
+  },
+  "Oruro": {
+    "Accionamiento": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "120",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Frenado": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "120",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Tensión del Cable Tractor": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "120",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos Electromecánicos de Estaciones": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "120",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Operación, Control y Seguridad": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "120",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Dispositivos de Línea": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "120",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Almacenamiento de Vehículos": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "120",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ],
+    "Suministros": [
+      {
+        "Disponibilidad": 1,
+        "Confiabilidad": 1,
+        "MTBF": "120",
+        "MTTA": "00:00:00",
+        "MTTR": "00:00:00"
+      }
+    ]
+  }
+}
