@@ -226,7 +226,7 @@ color_dict = {f'{categoria}': color for categoria, color in zip(categorias_base,
 
 # Layout de la aplicación
 layout = html.Div([
-    html.H1('DASHBOARD DE INDICADORES DE TORRES'),
+    html.H1('DASHBOARD DE INDICADORES DE TORRES  '),
 
     html.Div([
         html.Label('Seleccione el periodo:'),

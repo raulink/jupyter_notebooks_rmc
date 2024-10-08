@@ -313,7 +313,7 @@ def obtener_datos_desde_csv():
         df = pd.read_csv(CSV_URL, header=0)
         return df
     except Exception as e:
-        print(f"Error al obtener datos desde CSV: {e}")
+        print(f"Error al obtener muchos datos desde CSV: {e}")
         return pd.DataFrame()  # Retornar un DataFrame vacío en caso de error
 
 # Definir las opciones de tiempo
