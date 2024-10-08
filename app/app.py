@@ -25,7 +25,7 @@ sidebar = dbc.Offcanvas(
                 dbc.NavLink("Indicadores", href="/linearoja", active="exact"),
                 dbc.NavLink("Partidas presupuestarias", href="/partidas", active="exact"),
                 dbc.NavLink("Gráfico de Ingresos", href="/grafico_ingreso", active="exact"),
-                dbc.NavLink("Gráfico de Salidas", href="/grafico_salida", active="exact"),
+                dbc.NavLink("Gráfico De Salidas", href="/grafico_salida", active="exact"),
                 dbc.NavLink("Dashboard Operaciones", href="/operaciones", active="exact"),
                 
                 # Mover el DropdownMenu dentro del dbc.Nav
@@ -118,7 +118,7 @@ def toggle_offcanvas(n_clicks, is_open):
     Input('url', 'pathname'),
     prevent_initial_call=True
 )
-def display_page(pathname):
+def display_pag(pathname):
     if pathname == '/' or pathname == '':
         return main_image  # Mostrar la imagen principal cuando no se selecciona ninguna opción
     elif pathname == '/dashboard':
