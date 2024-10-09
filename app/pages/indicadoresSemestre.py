@@ -337,7 +337,7 @@ color_map = {
 }
 # Layout de la aplicación
 layout = html.Div([
-    html.H1('Dashboard De Indicadores Semestre'),
+    html.H1('Dashboard De Indicadores De Avance'),
 
     html.Div([
         html.Label('Seleccione el periodo:'),

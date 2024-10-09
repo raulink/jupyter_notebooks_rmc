@@ -253,14 +253,14 @@ layout = html.Div([
             id='tipo-grafico-dropdown',
             options=[
                 {'label': 'Barras', 'value': 'bar'},
-                {'label': 'Líneas', 'value': 'line'},
+                # {'label': 'Líneas', 'value': 'line'},
                 {'label': 'Torta', 'value': 'pie'},
-                {'label': 'Área', 'value': 'area'},
-                {'label': 'Dispersión', 'value': 'scatter'},
-                {'label': 'Histograma', 'value': 'histogram'},
-                {'label': 'Cajas', 'value': 'box'},
-                {'label': 'Violín', 'value': 'violin'},
-                {'label': 'Heatmap', 'value': 'heatmap'}
+                # {'label': 'Área', 'value': 'area'},
+                # {'label': 'Dispersión', 'value': 'scatter'},
+                # {'label': 'Histograma', 'value': 'histogram'},
+                # {'label': 'Cajas', 'value': 'box'},
+                # {'label': 'Violín', 'value': 'violin'},
+                # {'label': 'Heatmap', 'value': 'heatmap'}
             ],
             value='bar'
         )
@@ -280,8 +280,8 @@ layout = html.Div([
         dcc.Graph(id='dashboard-2')
     ],     
     style={
-        'background-image': 'linear-gradient(to right, #83a4d4, #b6fbff)',  # Fondo degradado
-        'padding': '20px',  # Añadir padding para mejor visualización
+        'background-image': 'linear-gradient(to right, #380B61, #BF00FF)',  # Fondo degradado
+        'padding': '10px',  # Añadir padding para mejor visualización
         'border-radius': '10px'  # Añadir bordes redondeados
     })
 ])

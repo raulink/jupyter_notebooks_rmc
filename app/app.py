@@ -34,7 +34,7 @@ sidebar = dbc.Offcanvas(
                     children=[
                         dbc.DropdownMenuItem("Indicadores De Torres", href="/indicadoresDeTorres"),
                         dbc.DropdownMenuItem("Indicadores De Vehiculos", href="/indicadoresDeVehiculos"),
-                        dbc.DropdownMenuItem("Indicadores De Semestres", href="/indicadoresSemestre"),
+                        dbc.DropdownMenuItem("Indicadores De Avance", href="/indicadoresSemestre"),
                     ],
                     nav=True,
                     in_navbar=False,  # Esto asegura que el menú esté en el sidebar y no en la navbar
