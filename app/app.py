@@ -2,7 +2,7 @@ from dash import Dash, dcc, html, Input, Output, State
 import dash_bootstrap_components as dbc
 from dash import dash_table
 from pages import procesos
-from pages import dashboard, linearoja, partidas, grafico_ingreso, grafico_salida, operaciones, indicadoresDeTorres, indicadoresDeVehiculos,indicadoresSemestre
+from pages import dashboard, linearoja, partidas, grafico_ingreso, grafico_salida, operaciones, indicadoresDeTorres, indicadoresDeVehiculos,indicadoresSemestre, carroTensor
 
 # Crear instancia de la aplicación Dash y agregar hoja de estilo CSS
 external_stylesheets = ["https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/morph/bootstrap.min.css"]
@@ -22,11 +22,11 @@ sidebar = dbc.Offcanvas(
         dbc.Nav(
             [
                 dbc.NavLink("Dashboard OTs", href="/dashboard", active="exact"),
-                dbc.NavLink("Indicadores", href="/linearoja", active="exact"),
                 dbc.NavLink("Partidas presupuestarias", href="/partidas", active="exact"),
                 dbc.NavLink("Gráfico de Ingresos", href="/grafico_ingreso", active="exact"),
                 dbc.NavLink("Gráfico De Salidas", href="/grafico_salida", active="exact"),
                 dbc.NavLink("Dashboard Operaciones", href="/operaciones", active="exact"),
+                dbc.NavLink("Indicadores Preventivos", href="/linearoja", active="exact"),
                 
                 # Mover el DropdownMenu dentro del dbc.Nav
                 dbc.DropdownMenu(
@@ -35,6 +35,16 @@ sidebar = dbc.Offcanvas(
                         dbc.DropdownMenuItem("Indicadores De Torres", href="/indicadoresDeTorres"),
                         dbc.DropdownMenuItem("Indicadores De Vehiculos", href="/indicadoresDeVehiculos"),
                         dbc.DropdownMenuItem("Indicadores De Avance", href="/indicadoresSemestre"),
+                    ],
+                    nav=True,
+                    in_navbar=False,  # Esto asegura que el menú esté en el sidebar y no en la navbar
+                    toggle_style={"width": "100%"},  # Ajustar el botón a todo el ancho
+                ),
+                # Mover el DropdownMenu dentro del dbc.Nav
+                dbc.DropdownMenu(
+                    label="ESTADO DE SISTEMAS",
+                    children=[
+                        dbc.DropdownMenuItem("Indicadores De Carro Tensor", href="/carroTensor"),
                     ],
                     nav=True,
                     in_navbar=False,  # Esto asegura que el menú esté en el sidebar y no en la navbar
@@ -139,6 +149,8 @@ def display_pag(pathname):
          return indicadoresDeVehiculos.layout
     elif pathname == '/indicadoresSemestre': 
          return indicadoresSemestre.layout
+    elif pathname == '/carroTensor': 
+         return carroTensor.layout
     elif pathname == '/procesos': 
          return procesos.layout
      
