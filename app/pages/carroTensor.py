@@ -478,7 +478,7 @@ def obtener_datos_desde_csv():
     
 
 # Definir las opciones de periodo, línea y categoría
-time_options = ['TODOS LOS MESES','MOSTRAR DATOS TODOS LOS MESES','MENSUAL 05', 'MENSUAL 06', 'MENSUAL 07', 'MENSUAL 08', 'MENSUAL 09', 'MENSUAL 10']
+time_options = ['MOSTRAR DATOS TODOS LOS MESES','MENSUAL 05', 'MENSUAL 06', 'MENSUAL 07', 'MENSUAL 08', 'MENSUAL 09', 'MENSUAL 10']
 line_options = ['LINEA ROJA', 'LINEA AMARILLA', 'LINEA VERDE', 'LINEA AZUL', 'LINEA NARANJA', 'LINEA BLANCA', 'LINEA CELESTE', 'LINEA MORADA', 'LINEA CAFE', 'LINEA PLATEADA']
 category_options = ['S1R1', 'S2R1', 'S2R2', 'S1R2']
 
@@ -658,6 +658,165 @@ def update_dashboards(selected_time, selected_line, selected_category, selected_
         'LINEA PLATEADA': 'gray'
     }
     color = line_colors.get(selected_line, 'black')  # Color predeterminado negro si no coincide
+    # figure_size = (800, 800)  # Ajusta las dimensiones de la figura aquí
+    # Si se selecciona "MOSTRAR DATOS TODOS LOS MESES"
+        # Si se selecciona "MOSTRAR DATOS TODOS LOS MESES"
+    if selected_time == 'MOSTRAR DATOS TODOS LOS MESES':
+        df_con_combined = pd.DataFrame()
+        df_sin_combined = pd.DataFrame()
+
+        for month in ['MENSUAL 05', 'MENSUAL 06', 'MENSUAL 07', 'MENSUAL 08', 'MENSUAL 09', 'MENSUAL 10']:
+            if month in column_map and selected_line in column_map[month]:
+                if selected_category in column_map[month][selected_line]:
+                    column = column_map[month][selected_line].get(selected_category, None)
+
+                    if column:
+                        # Filtrar y preparar datos para "CON CABINAS"
+                        df_con = df[df['Tareas'].str.contains('CON', na=False)][['Unnamed: 1', column]].copy()
+                        df_con[column] = pd.to_numeric(df_con[column], errors='coerce')
+                        df_con = df_con.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
+                        df_con['Mes'] = month
+                        df_con_combined = pd.concat([df_con_combined, df_con], ignore_index=True)
+
+                        # Filtrar y preparar datos para "SIN CABINAS"
+                        df_sin = df[df['Tareas'].str.contains('SIN', na=False)][['Unnamed: 1', column]].copy()
+                        df_sin[column] = pd.to_numeric(df_sin[column], errors='coerce')
+                        df_sin = df_sin.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
+                        df_sin['Mes'] = month
+                        df_sin_combined = pd.concat([df_sin_combined, df_sin], ignore_index=True)
+
+        # Crear la figura para "CON CABINAS" con tipo de gráfico seleccionado
+        if selected_graph_type == 'Barra':
+            fig_con = px.bar(df_con_combined, x='Mes', y='Valor', color='Descripción', title='CON CABINAS - Todos los Meses',
+                             color_discrete_sequence=[color], barmode='group', text='Valor')
+        # Crear la figura para "CON CABINAS" con tipo de gráfico Línea (con puntos y valores)
+        if selected_graph_type == 'Línea':
+            fig_con = px.line(
+            df_con_combined.groupby('Mes').sum().reset_index(),
+            x='Mes', y='Valor', 
+            title='CON CABINAS - Todos los Meses',
+            line_shape='linear',
+            markers=True,
+            color_discrete_sequence=[color]
+        )
+
+        # Agregar etiquetas de valor en cada punto
+            fig_con.update_traces(text=df_con_combined.groupby('Mes').sum()['Valor'].apply(lambda x: f'{x:.2f}'), textposition='top center')
+
+            # Agregar línea de tendencia
+            if len(df_con_combined) > 1:
+                x_values = np.arange(len(df_con_combined['Mes'].unique()))
+                z = np.polyfit(x_values, df_con_combined.groupby('Mes').sum()['Valor'], 1)
+                p = np.poly1d(z)
+                fig_con.add_scatter(x=df_con_combined['Mes'].unique(), y=p(x_values), mode='lines', name='Tendencia', line=dict(color='black'))
+                 # Expandir el rango del eje X para dar más espacio
+                fig_con.update_xaxes(range=[-0.5, len(df_con_combined['Mes'].unique()) - 0.5])
+            elif selected_graph_type == 'Dispersión':
+    # Gráfico de dispersión para "CON CABINAS"
+                fig_con = px.scatter(df_con_combined.groupby('Mes').sum().reset_index(), x='Mes', y='Valor', title='CON CABINAS - Todos los Meses',
+                         color_discrete_sequence=[color])
+
+        # Crear la figura para "SIN CABINAS" con tipo de gráfico seleccionado
+        if selected_graph_type == 'Barra':
+            fig_sin = px.bar(df_sin_combined, x='Mes', y='Valor', color='Descripción', title='SIN CABINAS - Todos los Meses',
+                             color_discrete_sequence=[color], barmode='group', text='Valor')
+        # Crear la figura para "SIN CABINAS" con tipo de gráfico Línea (con puntos y valores)
+        if selected_graph_type == 'Línea':
+            fig_sin = px.line(
+            df_sin_combined.groupby('Mes').sum().reset_index(),
+            x='Mes', y='Valor', 
+            title='SIN CABINAS - Todos los Meses',
+            line_shape='linear',
+            markers=True,
+            color_discrete_sequence=[color]
+        )
+
+        # Agregar etiquetas de valor en cada punto
+            fig_sin.update_traces(text=df_sin_combined.groupby('Mes').sum()['Valor'].apply(lambda x: f'{x:.2f}'), textposition='top center')
+
+            # Agregar línea de tendencia
+            if len(df_sin_combined) > 1:
+                x_values_sin = np.arange(len(df_sin_combined['Mes'].unique()))
+                z_sin = np.polyfit(x_values_sin, df_sin_combined.groupby('Mes').sum()['Valor'], 1)
+                p_sin = np.poly1d(z_sin)
+                fig_sin.add_scatter(x=df_sin_combined['Mes'].unique(), y=p_sin(x_values_sin), mode='lines', name='Tendencia', line=dict(color='black'))
+                # Expandir el rango del eje X para dar más espacio
+                fig_sin.update_xaxes(range=[-0.5, len(df_sin_combined['Mes'].unique()) - 0.5])
+            elif selected_graph_type == 'Dispersión':fig_sin = px.scatter(df_sin_combined.groupby('Mes').sum().reset_index(), x='Mes', y='Valor', title='SIN CABINAS - Todos los Meses',
+                         color_discrete_sequence=[color])
+    
+        return fig_con, fig_sin
+
+    # Si se selecciona un mes específico
+    else:
+        if selected_line in column_map[selected_time]:
+            column = column_map[selected_time][selected_line].get(selected_category, None)
+
+            if column:
+                # Filtrar datos para "CON"
+                df_con = df[df['Tareas'].str.contains('CON', na=False)][['Unnamed: 1', column]].copy()
+                df_con[column] = pd.to_numeric(df_con[column], errors='coerce')
+                df_con = df_con.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
+
+                # Filtrar datos para "SIN"
+                df_sin = df[df['Tareas'].str.contains('SIN', na=False)][['Unnamed: 1', column]].copy()
+                df_sin[column] = pd.to_numeric(df_sin[column], errors='coerce')
+                df_sin = df_sin.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
+
+                # Crear la figura para el gráfico CON
+                if selected_graph_type == 'Barra':
+                    fig_con = px.bar(df_con, x='Descripción', y='Valor', title=f'CON CABINAS {selected_category} - {selected_time}',
+                                     color_discrete_sequence=[color])
+                elif selected_graph_type == 'Línea':
+                    fig_con = px.line(df_con, x='Descripción', y='Valor', title=f'CON CABINAS {selected_category} - {selected_time}',
+                                      color_discrete_sequence=[color])
+                    
+                 #   Agregar línea de tendencia si hay suficientes datos
+                    if len(df_con) > 1:  # Asegúrate de tener más de un punto de datos
+                        x_values = np.arange(len(df_con))  # Crear un array de índices
+                        z = np.polyfit(x_values, df_con['Valor'], 1)  # Ajustar una línea
+                        p = np.poly1d(z)  # Crear una función polinómica
+                        # Añadir la línea de tendencia al gráfico
+                        fig_con.add_scatter(x=df_con['Descripción'], y=p(x_values), mode='lines', name='Tendencia', line=dict(color='black'))
+                elif selected_graph_type == 'Dispersión':
+                    fig_con = px.scatter(df_con, x='Descripción', y='Valor', title=f'CON CABINAS {selected_category} - {selected_time}',
+                                         color_discrete_sequence=[color])
+
+                # Crear la figura para el gráfico SIN
+                if selected_graph_type == 'Barra':
+                    fig_sin = px.bar(df_sin, x='Descripción', y='Valor', title=f'SIN CABINAS {selected_category} - {selected_time}',
+                                     color_discrete_sequence=[color])
+                elif selected_graph_type == 'Línea':
+                    fig_sin = px.line(df_sin, x='Descripción', y='Valor', title=f'SIN CABINAS {selected_category} - {selected_time}',
+                                      color_discrete_sequence=[color])
+
+                    # Agregar línea de tendencia si hay suficientes datos
+                    if len(df_sin) > 1:  # Asegúrate de tener más de un punto de datos
+                        x_values_sin = np.arange(len(df_sin))  # Crear un array de índices
+                        z_sin = np.polyfit(x_values_sin, df_sin['Valor'], 1)  # Ajustar una línea
+                        p_sin = np.poly1d(z_sin)  # Crear una función polinómica  
+                        # Añadir la línea de tendencia al gráfico
+                        fig_sin.add_scatter(x=df_sin['Descripción'], y=p_sin(x_values_sin), mode='lines', name='Tendencia', line=dict(color='black'))                  
+                elif selected_graph_type == 'Dispersión':
+                    fig_sin = px.scatter(df_sin, x='Descripción', y='Valor', title=f'SIN CABINAS {selected_category} - {selected_time}',
+                                         color_discrete_sequence=[color])
+                # fig_sin.update_layout(width=figure_size[0], height=figure_size[1], margin=dict(l=40, r=40, t=40, b=40))
+                # # Ajustar el tamaño de la gráfica
+                # fig_con.update_layout(width=600, height=400, margin=dict(l=40, r=40, t=40, b=40))
+                # fig_sin.update_layout(width=600, height=400, margin=dict(l=40, r=40, t=40, b=40))
+
+                # Expandir el rango del eje X para dar más espacio a la tendencia
+                fig_con.update_xaxes(range=[-0.5, len(df_con) - 0.5])
+                fig_sin.update_xaxes(range=[-0.5, len(df_sin) - 0.5])
+
+                return fig_con, fig_sin
+
+    # Si no hay datos para graficar, devolver gráficos vacíos
+    return px.Figure(), px.Figure()
+
+
+# yopi  yopi 
+# yopi
 
     # if selected_time == 'MOSTRAR DATOS TODOS LOS MESES':
     #     df_con_combined = pd.DataFrame()
@@ -847,128 +1006,3 @@ def update_dashboards(selected_time, selected_line, selected_category, selected_
 #         return px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line}'), \
 #                px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line}')
 #------------------------------------------------------------------
-    if selected_time == 'MOSTRAR DATOS TODOS LOS MESES':
-        df_con_combined = pd.DataFrame()
-        df_sin_combined = pd.DataFrame()
-        
-        for month in ['MENSUAL 05', 'MENSUAL 06', 'MENSUAL 07', 'MENSUAL 08', 'MENSUAL 09', 'MENSUAL 10']:
-            if month in column_map and selected_line in column_map[month]:
-                column = column_map[month][selected_line].get(selected_category, None)
-                
-                if column:
-                    # Filtrar datos para "CON"
-                    df_con = df[df['Tareas'].str.contains('CON', na=False)][['Unnamed: 1', column]].copy()
-                    df_con[column] = pd.to_numeric(df_con[column], errors='coerce')
-                    df_con = df_con.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
-                    df_con['Mes'] = month  # Añadir columna para el mes
-                    df_con_combined = pd.concat([df_con_combined, df_con], ignore_index=True)
-
-                    # Filtrar datos para "SIN"
-                    df_sin = df[df['Tareas'].str.contains('SIN', na=False)][['Unnamed: 1', column]].copy()
-                    df_sin[column] = pd.to_numeric(df_sin[column], errors='coerce')
-                    df_sin = df_sin.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
-                    df_sin['Mes'] = month  # Añadir columna para el mes
-                    df_sin_combined = pd.concat([df_sin_combined, df_sin], ignore_index=True)
-
-        # Crear la figura para el gráfico CON
-        if selected_graph_type == 'Barra':
-            fig_con = px.bar(df_con_combined, x='Descripción', y='Valor', color='Mes', title='CON CABINAS - Todos los Meses',
-                             color_discrete_sequence=px.colors.qualitative.Set1, barmode='group')
-        elif selected_graph_type == 'Línea':
-            fig_con = px.line(df_con_combined, x='Descripción', y='Valor', color='Mes', title='CON CABINAS - Todos los Meses',
-                              color_discrete_sequence=px.colors.qualitative.Set1, barmode='group')
-                        # Agregar línea de tendencia
-            x_values = np.arange(len(df_con_combined))  # Crear un array de índices
-            z = np.polyfit(x_values, df_con_combined['Valor'], 1)  # Ajustar una línea
-            p = np.poly1d(z)  # Crear una función polinómica
-            # Añadir la línea de tendencia al gráfico
-            fig_con.add_scatter(x=df_con_combined['Descripción'], y=p(x_values), mode='lines', name='Tendencia', line=dict(color='black'))
-        elif selected_graph_type == 'Dispersión':
-            fig_con = px.scatter(df_con_combined, x='Descripción', y='Valor', color='Mes', title='CON CABINAS - Todos los Meses',
-                                 color_discrete_sequence=px.colors.qualitative.Set1, barmode='group')
-
-        # Crear la figura para el gráfico SIN
-        if selected_graph_type == 'Barra':
-            fig_sin = px.bar(df_sin_combined, x='Descripción', y='Valor', color='Mes', title='SIN CABINAS - Todos los Meses',
-                             color_discrete_sequence=px.colors.qualitative.Set1, barmode='group')
-        elif selected_graph_type == 'Línea':
-            fig_sin = px.line(df_sin_combined, x='Descripción', y='Valor', color='Mes', title='SIN CABINAS - Todos los Meses',
-                              color_discrete_sequence=px.colors.qualitative.Set1, barmode='group')
-                        # Agregar línea de tendencia
-            x_values_sin = np.arange(len(df_sin_combined))  # Crear un array de índices
-            z_sin = np.polyfit(x_values_sin, df_sin_combined['Valor'], 1)  # Ajustar una línea
-            p_sin = np.poly1d(z_sin)  # Crear una función polinómica
-            # Añadir la línea de tendencia al gráfico
-            fig_sin.add_scatter(x=df_sin_combined['Descripción'], y=p_sin(x_values_sin), mode='lines', name='Tendencia', line=dict(color='black'))
-                              
-        elif selected_graph_type == 'Dispersión':
-            fig_sin = px.scatter(df_sin_combined, x='Descripción', y='Valor', color='Mes', title='SIN CABINAS - Todos los Meses',
-                                 color_discrete_sequence=px.colors.qualitative.Set1)
-
-        return fig_con, fig_sin
-
-    # Si se selecciona un mes específico
-    else:
-        if selected_line in column_map[selected_time]:
-            column = column_map[selected_time][selected_line].get(selected_category, None)
-
-            if column:
-                # Filtrar datos para "CON"
-                df_con = df[df['Tareas'].str.contains('CON', na=False)][['Unnamed: 1', column]].copy()
-                df_con[column] = pd.to_numeric(df_con[column], errors='coerce')
-                df_con = df_con.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
-
-                # Filtrar datos para "SIN"
-                df_sin = df[df['Tareas'].str.contains('SIN', na=False)][['Unnamed: 1', column]].copy()
-                df_sin[column] = pd.to_numeric(df_sin[column], errors='coerce')
-                df_sin = df_sin.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
-
-                # Crear la figura para el gráfico CON
-                if selected_graph_type == 'Barra':
-                    fig_con = px.bar(df_con, x='Descripción', y='Valor', title=f'CON CABINAS {selected_category} - {selected_time}',
-                                     color_discrete_sequence=[color])
-                elif selected_graph_type == 'Línea':
-                    fig_con = px.line(df_con, x='Descripción', y='Valor', title=f'CON CABINAS {selected_category} - {selected_time}',
-                                      color_discrete_sequence=[color])
-                                # Agregar línea de tendencia
-                    x_values = np.arange(len(df_con))  # Crear un array de índices
-                    z = np.polyfit(x_values, df_con['Valor'], 1)  # Ajustar una línea
-                    p = np.poly1d(z)  # Crear una función polinómica
-                    # Añadir la línea de tendencia al gráfico
-                    fig_con.add_scatter(x=df_con['Descripción'], y=p(x_values), mode='lines', name='Tendencia', line=dict(color='black'))
-                elif selected_graph_type == 'Dispersión':
-                    fig_con = px.scatter(df_con, x='Descripción', y='Valor', title=f'CON CABINAS {selected_category} - {selected_time}',
-                                         color_discrete_sequence=[color])
-
-                # Crear la figura para el gráfico SIN
-                if selected_graph_type == 'Barra':
-                    fig_sin = px.bar(df_sin, x='Descripción', y='Valor', title=f'SIN CABINAS {selected_category} - {selected_time}',
-                                     color_discrete_sequence=[color])
-                elif selected_graph_type == 'Línea':
-                    fig_sin = px.line(df_sin, x='Descripción', y='Valor', title=f'SIN CABINAS {selected_category} - {selected_time}',
-                                      color_discrete_sequence=[color])
-            # Agregar línea de tendencia
-                    x_values_sin = np.arange(len(df_sin))  # Crear un array de índices
-                    z_sin = np.polyfit(x_values_sin, df_sin['Valor'], 1)  # Ajustar una línea
-                    p_sin = np.poly1d(z_sin)  # Crear una función polinómica  
-                    # Añadir la línea de tendencia al gráfico
-                    fig_sin.add_scatter(x=df_sin['Descripción'], y=p_sin(x_values_sin), mode='lines', name='Tendencia', line=dict(color='black'))                  
-                elif selected_graph_type == 'Dispersión':
-                    fig_sin = px.scatter(df_sin, x='Descripción', y='Valor', title=f'SIN CABINAS {selected_category} - {selected_time}',
-                                         color_discrete_sequence=[color])
-
-                return fig_con, fig_sin
-
-    # Si no hay datos para graficar, devolver gráficos vacíos
-            return px.Figure(), px.Figure()
-        else:
-            # Si no hay columnas válidas, devolver gráficos vacíos
-         return px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line} {selected_category}'), \
-                   px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line} {selected_category}')
-
-
-
-
-
-# yopi  yopi 
-# yopi

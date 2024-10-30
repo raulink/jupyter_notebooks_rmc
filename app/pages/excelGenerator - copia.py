@@ -110,9 +110,6 @@ class GoogleSheetProcessor:
         # Reemplazo con infer_objects para evitar advertencias
         df[list(self.valores.keys())] = df[list(self.valores.keys())].replace({'TRUE': True, 'FALSE': False}).infer_objects()
 
-
-        
-
         
         # Obtener las unidades
         df['unidad'] = df.apply(lambda row: next((self.regimen[key] for key in self.regimen.keys() if key in row and row[key] == True), None), axis=1)
