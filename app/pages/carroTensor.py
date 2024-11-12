@@ -1,459 +1,3 @@
-# # # import pandas as pd
-# # # import plotly.express as px
-# # # from dash import dcc, html, Input, Output, callback
-# # # import dash
-
-# # # # Enlace CSV de Google Sheets actualizado
-# # # CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQeyBubLucOlpCdHKSjPNdQtdxI89y8nxyJH3o-rYnHmSwFrezuzFIfmmcwnUuvLb66PvZ2TJjCyzgg/pub?output=csv'
-
-# # # # Función para obtener los datos desde el enlace CSV de Google Sheets
-# # # def obtener_datos_desde_csv():
-# # #     try:
-# # #         df = pd.read_csv(CSV_URL, header=0)
-# # #         return df
-# # #     except Exception as e:
-# # #         print(f"Error al obtener datos desde CSV: {e}")
-# # #         return pd.DataFrame()
-
-# # # # Definir las opciones de periodo, línea y categoría
-# # # time_options = ['MENSUAL 05', 'MENSUAL 06', 'MENSUAL 07', 'MENSUAL 08', 'MENSUAL 09', 'MENSUAL 10']
-# # # line_options = ['LINEA ROJA', 'LINEA AMARILLA', 'LINEA VERDE', 'LINEA AZUL', 'LINEA PLATEADA']
-# # # category_options = ['S1R1', 'S2R1', 'S2R2', 'S1R2']
-
-# # # # Mapeo de columnas para cada combinación de línea y categoría por periodo
-# # # column_map = {
-# # #     'MENSUAL 05': {
-# # #         'LINEA ROJA': {'S1R1': 'E', 'S2R1': 'F'},
-# # #         'LINEA AMARILLA': {'S1R1': 'G', 'S1R2': 'H', 'S2R2': 'I'},
-# # #         'LINEA VERDE': {'S1R1': 'J', 'S2R1': 'K'},
-# # #         'LINEA AZUL': {'S1R1': 'L', 'S2R1': 'M'},
-# # #         'LINEA PLATEADA': {'S1R1': 'N', 'S2R1': 'O'}
-# # #     },
-# # #     # Agregar más periodos y líneas según tu archivo
-# # #     'MENSUAL 06': {
-# # #         'LINEA ROJA': {'S1R1': 'AB', 'S2R1': 'AC'},
-# # #         'LINEA AMARILLA': {'S1R1': 'AD', 'S1R2': 'AE', 'S2R2': 'AF'},
-# # #         'LINEA VERDE': {'S1R1': 'AG', 'S2R1': 'AH'},
-# # #         'LINEA AZUL': {'S1R1': 'AI', 'S2R1': 'AJ'},
-# # #         'LINEA PLATEADA': {'S1R1': 'AK', 'S2R1': 'AL'}
-# # #     }
-# # # }
-
-# # # # Layout de la aplicación
-# # # layout = html.Div([
-# # #     html.H1('Dashboard de Carro Tensor'),
-
-# # #     html.Div([
-# # #         html.Label('Seleccione el periodo:'),
-# # #         dcc.Dropdown(
-# # #             id='tiempo-dropdown-6',
-# # #             options=[{'label': periodo, 'value': periodo} for periodo in time_options],
-# # #             value=''  # Valor predeterminado
-# # #         ),
-# # #     ], style={'width': '30%', 'display': 'inline-block', 'paddingLeft': '20px'}),
-    
-# # #     html.Div([
-# # #         html.Label('Seleccione la línea:'),
-# # #         dcc.Dropdown(
-# # #             id='linea-dropdown-6',
-# # #             options=[{'label': linea, 'value': linea} for linea in line_options],
-# # #             value=''  # Valor predeterminado
-# # #         ),
-# # #     ], style={'width': '30%', 'display': 'inline-block', 'paddingLeft': '20px'}),
-
-# # #     html.Div([
-# # #         html.Label('Seleccione la categoría:'),
-# # #         dcc.Dropdown(
-# # #             id='categoria-dropdown-6',
-# # #             options=[{'label': categoria, 'value': categoria} for categoria in category_options],
-# # #             value='S1R1'  # Valor predeterminado
-# # #         ),
-# # #     ], style={'width': '30%', 'display': 'inline-block', 'paddingLeft': '20px'}),
-    
-# # #     html.Div([
-# # #         html.Label('Seleccione el tipo de gráfico:'),
-# # #         dcc.Dropdown(
-# # #             id='tipo-grafico-dropdown-6',
-# # #             options=[
-# # #                 {'label': 'Barras', 'value': 'bar'},
-# # #                 {'label': 'Líneas', 'value': 'line'},
-# # #                 {'label': 'Torta', 'value': 'pie'},
-# # #                 {'label': 'Área', 'value': 'area'},
-# # #                 {'label': 'Dispersión', 'value': 'scatter'},
-# # #                 {'label': 'Histograma', 'value': 'histogram'},
-# # #                 {'label': 'Cajas', 'value': 'box'},
-# # #                 {'label': 'Violín', 'value': 'violin'},
-# # #                 {'label': 'Heatmap', 'value': 'heatmap'}
-# # #             ],
-# # #             value='bar'  # Valor predeterminado
-# # #         ),
-# # #     ], style={'width': '30%', 'display': 'inline-block', 'paddingLeft': '20px'}),
-
-# # #     html.Br(),  # Añadir separación visual
-
-# # #     html.Div([
-# # #         dcc.Graph(id='dashboard-6')
-# # #     ], style={
-# # #         'background-image': 'linear-gradient(to right, #83a4d4, #b6fbff)',  # Fondo degradado
-# # #         'padding': '20px',  # Añadir padding para mejor visualización
-# # #         'border-radius': '10px'  # Añadir bordes redondeados
-# # #     })
-# # # ])
-
-# # # # Callback para actualizar el gráfico basado en la selección de periodo, línea, categoría y tipo de gráfico
-# # # @callback(
-# # #     Output('dashboard-6', 'figure'),
-# # #     [Input('tiempo-dropdown-6', 'value'),
-# # #      Input('linea-dropdown-6', 'value'),
-# # #      Input('categoria-dropdown-6', 'value'),
-# # #      Input('tipo-grafico-dropdown-6', 'value')]
-# # # )
-# # # def update_dashboard(selected_time, selected_line, selected_category, selected_chart):
-# # #     # Obtener los datos desde el CSV
-# # #     df = obtener_datos_desde_csv()
-
-# # #     # Verificar si la selección existe en el mapa de columnas
-# # #     if selected_time in column_map and selected_line in column_map[selected_time]:
-# # #         column = column_map[selected_time][selected_line].get(selected_category, None)
-
-# # #         if column:
-# # #             #
-# # #             # Filtrar los datos de las filas 7 a 16 (ajustar según necesidad)
-# # #             df_filtered = df.iloc[6:16][['Time', column]].copy()
-
-# # #             # Convertir los datos a formato numérico
-# # #             df_filtered[column] = pd.to_numeric(df_filtered[column], errors='coerce')
-# # #             df_filtered = df_filtered.rename(columns={column: 'Valor'})
-
-# # #             # Crear la gráfica según el tipo seleccionado
-# # #             if selected_chart == 'bar':
-# # #                 fig = px.bar(df_filtered, x='Time', y='Valor', title=f'{selected_time} {selected_line} {selected_category}',
-# # #                              text='Valor')
-# # #                 fig.update_traces(texttemplate='%{y:.2f}%', textposition='outside')
-
-# # #             elif selected_chart == 'line':
-# # #                 fig = px.line(df_filtered, x='Time', y='Valor', title=f'{selected_time} {selected_line} {selected_category}',
-# # #                               markers=True)
-
-# # #             elif selected_chart == 'pie':
-# # #                 fig = px.pie(df_filtered, values='Valor', names='Time', title=f'{selected_time} {selected_line} {selected_category}')
-
-# # #             elif selected_chart == 'scatter':
-# # #                 fig = px.scatter(df_filtered, x='Time', y='Valor', title=f'{selected_time} {selected_line} {selected_category}')
-
-# # #             elif selected_chart == 'area':
-# # #                 fig = px.area(df_filtered, x='Time', y='Valor', title=f'{selected_time} {selected_line} {selected_category}')
-
-# # #             elif selected_chart == 'histogram':
-# # #                 fig = px.histogram(df_filtered, x='Time', y='Valor', title=f'{selected_time} {selected_line} {selected_category}')
-
-# # #             elif selected_chart == 'box':
-# # #                 fig = px.box(df_filtered, y='Valor', title=f'{selected_time} {selected_line} {selected_category}')
-
-# # #             elif selected_chart == 'violin':
-# # #                 fig = px.violin(df_filtered, y='Valor', title=f'{selected_time} {selected_line} {selected_category}')
-
-# # #             elif selected_chart == 'heatmap':
-# # #                 fig = px.density_heatmap(df_filtered, x='Time', y='Valor', title=f'{selected_time} {selected_line} {selected_category}')
-# # #             else:
-# # #                 fig = px.bar(df_filtered, x='Time', y='Valor', title=f'{selected_time} {selected_line} {selected_category}')
-# # #                 fig.update_traces(texttemplate='%{y:.2f}%', textposition='outside')
-
-# # #             # Ajustar el rango del eje Y para mejorar la visualización
-# # #             fig.update_layout(yaxis=dict(range=[0, df_filtered['Valor'].max() * 1.1]))
-# # #         else:
-# # #             fig = px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line} {selected_category}')
-# # #     else:
-# # #         fig = px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line}')
-
-# # #     return fig
-# # # #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-# # import pandas as pd
-# # import plotly.express as px
-# # from dash import dcc, html, Input, Output, callback
-# # import dash
-
-# # # Enlace CSV de Google Sheets actualizado
-# # CSV_URL = 'Carro Tensor  (3).xlsx'
-
-# # # Función para obtener los datos desde el archivo Excel cargado
-# # def obtener_datos_desde_csv():
-# #     try:
-# #         df = pd.read_excel(CSV_URL, sheet_name='RESUMEN CARRO TENSOR')
-# #         return df
-# #     except Exception as e:
-# #         print(f"Error al obtener datos desde CSV: {e}")
-# #         return pd.DataFrame()
-
-# # # Definir las opciones de periodo, línea y categoría
-# # time_options = ['MENSUAL 05', 'MENSUAL 06', 'MENSUAL 07', 'MENSUAL 08', 'MENSUAL 09', 'MENSUAL 10']
-# # line_options = ['LINEA ROJA', 'LINEA AMARILLA', 'LINEA VERDE', 'LINEA AZUL', 'LINEA PLATEADA']
-# # category_options = ['S1R1', 'S2R1', 'S2R2', 'S1R2']
-
-# # # Mapeo de columnas para cada combinación de línea y categoría por periodo
-# # column_map = {
-# #     'MENSUAL 05': {
-# #         'LINEA ROJA': {'S1R1': 'MENSUSAL 05 ROJA S1R1', 'S2R1': 'MENSUSAL 05 ROJA S2R1'},
-# #         # Puedes agregar más columnas aquí según necesites
-# #     },
-# #     # Agregar más periodos y líneas según tu archivo
-# # }
-
-# # # Layout de la aplicación
-# # layout = html.Div([
-# #     html.H1('Dashboard de Carro Tensor'),
-
-# #     html.Div([
-# #         html.Label('Seleccione el periodo:'),
-# #         dcc.Dropdown(
-# #             id='tiempo-dropdown',
-# #             options=[{'label': periodo, 'value': periodo} for periodo in time_options],
-# #             value='MENSUAL 05'  # Valor predeterminado
-# #         ),
-# #     ], style={'width': '30%', 'display': 'inline-block', 'paddingLeft': '20px'}),
-    
-# #     html.Div([
-# #         html.Label('Seleccione la línea:'),
-# #         dcc.Dropdown(
-# #             id='linea-dropdown',
-# #             options=[{'label': linea, 'value': linea} for linea in line_options],
-# #             value='LINEA ROJA'  # Valor predeterminado
-# #         ),
-# #     ], style={'width': '30%', 'display': 'inline-block', 'paddingLeft': '20px'}),
-
-# #     html.Div([
-# #         html.Label('Seleccione la categoría:'),
-# #         dcc.Dropdown(
-# #             id='categoria-dropdown',
-# #             options=[{'label': categoria, 'value': categoria} for categoria in category_options],
-# #             value='S1R1'  # Valor predeterminado
-# #         ),
-# #     ], style={'width': '30%', 'display': 'inline-block', 'paddingLeft': '20px'}),
-    
-# #     html.Br(),  # Añadir separación visual
-
-# #     html.Div([
-# #         dcc.Graph(id='dashboard-con')
-# #     ], style={
-# #         'background-image': 'linear-gradient(to right, #83a4d4, #b6fbff)',  # Fondo degradado
-# #         'padding': '20px',  # Añadir padding para mejor visualización
-# #         'border-radius': '10px',  # Añadir bordes redondeados
-# #         'marginBottom': '50px'
-# #     }),
-
-# #     html.Div([
-# #         dcc.Graph(id='dashboard-sin')
-# #     ], style={
-# #         'background-image': 'linear-gradient(to right, #83a4d4, #b6fbff)',  # Fondo degradado
-# #         'padding': '20px',  # Añadir padding para mejor visualización
-# #         'border-radius': '10px'
-# #     })
-# # ])
-
-# # # Callback para actualizar ambos gráficos basado en la selección de periodo, línea y categoría
-# # @callback(
-# #     [Output('dashboard-con', 'figure'),
-# #      Output('dashboard-sin', 'figure')],
-# #     [Input('tiempo-dropdown', 'value'),
-# #      Input('linea-dropdown', 'value'),
-# #      Input('categoria-dropdown', 'value')]
-# # )
-# # def update_dashboards(selected_time, selected_line, selected_category):
-# #     # Obtener los datos desde el archivo Excel
-# #     df = obtener_datos_desde_csv()
-
-# #     # Verificar si la selección existe en el mapa de columnas
-# #     if selected_time in column_map and selected_line in column_map[selected_time]:
-# #         column = column_map[selected_time][selected_line].get(selected_category, None)
-
-# #         if column:
-# #             # Filtrar los datos de las filas con "CON" en la columna "Tareas"
-# #             df_con = df[df['Tareas'].str.contains('CON')][['Unnamed: 1', column]].copy()
-# #             df_con[column] = pd.to_numeric(df_con[column], errors='coerce')
-# #             df_con = df_con.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
-
-# #             # Filtrar los datos de las filas con "SIN" en la columna "Tareas"
-# #             df_sin = df[df['Tareas'].str.contains('SIN')][['Unnamed: 1', column]].copy()
-# #             df_sin[column] = pd.to_numeric(df_sin[column], errors='coerce')
-# #             df_sin = df_sin.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
-
-# #             # Crear gráfica para "CON"
-# #             fig_con = px.bar(df_con, x='Descripción', y='Valor', title=f'CON {selected_category}')
-# #             fig_con.update_traces(texttemplate='%{y:.2f}', textposition='outside')
-
-# #             # Crear gráfica para "SIN"
-# #             fig_sin = px.bar(df_sin, x='Descripción', y='Valor', title=f'SIN {selected_category}')
-# #             fig_sin.update_traces(texttemplate='%{y:.2f}', textposition='outside')
-
-# #             return fig_con, fig_sin
-# #         else:
-# #             # Si no hay columnas válidas, devolver gráficos vacíos
-# #             return px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line} {selected_category}'), \
-# #                    px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line} {selected_category}')
-# #     else:
-# #         # Si no se encuentra el mapeo adecuado
-# #         return px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line}'), \
-# #                px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line}')
-# import pandas as pd
-# import plotly.express as px
-# from dash import dcc, html, Input, Output, callback
-# import dash
-
-# # URL del CSV de Google Sheets
-# CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQeyBubLucOlpCdHKSjPNdQtdxI89y8nxyJH3o-rYnHmSwFrezuzFIfmmcwnUuvLb66PvZ2TJjCyzgg/pub?output=csv'
-
-# # Función para obtener los datos desde el archivo CSV
-# def obtener_datos_desde_csv():
-#     try:
-#         df = pd.read_csv(CSV_URL)
-#         return df
-#     except Exception as e:
-#         print(f"Error al obtener datos desde CSV: {e}")
-#         return pd.DataFrame()
-
-# # Definir las opciones de periodo, línea y categoría
-# time_options = ['MENSUAL 05', 'MENSUAL 06', 'MENSUAL 07', 'MENSUAL 08', 'MENSUAL 09', 'MENSUAL 10']
-# line_options = ['LINEA ROJA', 'LINEA AMARILLA', 'LINEA VERDE', 'LINEA AZUL', 'LINEA PLATEADA']
-# category_options = ['S1R1', 'S2R1', 'S2R2', 'S1R2']
-
-# # Mapeo de columnas para cada combinación de línea y categoría por periodo
-# column_map = {
-#     'MENSUAL 05': {
-#         'LINEA ROJA': {'S1R1': 'MENSUSAL 05 ROJA S1R1', 'S2R1': 'MENSUSAL 05 ROJA S2R1'},
-#         # Puedes agregar más columnas aquí según necesites
-#     },
-#     # Agregar más periodos y líneas según tu archivo
-# }
-
-# # Definir las opciones de tipo de gráfico
-# graph_type_options = ['Barra', 'Línea', 'Dispersión']
-
-# # Layout de la aplicación con un menú para el tipo de gráfico
-# layout = html.Div([
-#     html.H1('Dashboard de Carro Tensor'),
-
-#     html.Div([
-#         html.Label('Seleccione el periodo:'),
-#         dcc.Dropdown(
-#             id='tiempo-dropdown',
-#             options=[{'label': periodo, 'value': periodo} for periodo in time_options],
-#             value='MENSUAL 05'  # Valor predeterminado
-#         ),
-#     ], style={'width': '23%', 'display': 'inline-block', 'paddingLeft': '20px'}),
-    
-#     html.Div([
-#         html.Label('Seleccione la línea:'),
-#         dcc.Dropdown(
-#             id='linea-dropdown',
-#             options=[{'label': linea, 'value': linea} for linea in line_options],
-#             value='LINEA ROJA'  # Valor predeterminado
-#         ),
-#     ], style={'width': '23%', 'display': 'inline-block', 'paddingLeft': '20px'}),
-
-#     html.Div([
-#         html.Label('Seleccione la categoría:'),
-#         dcc.Dropdown(
-#             id='categoria-dropdown',
-#             options=[{'label': categoria, 'value': categoria} for categoria in category_options],
-#             value='S1R1'  # Valor predeterminado
-#         ),
-#     ], style={'width': '23%', 'display': 'inline-block', 'paddingLeft': '20px'}),
-
-#     html.Div([
-#         html.Label('Seleccione el tipo de gráfico:'),
-#         dcc.Dropdown(
-#             id='tipo-grafico-dropdown',
-#             options=[{'label': tipo, 'value': tipo} for tipo in graph_type_options],
-#             value='Barra'  # Valor predeterminado
-#         ),
-#     ], style={'width': '23%', 'display': 'inline-block', 'paddingLeft': '20px'}),
-
-#     html.Br(),  # Añadir separación visual
-
-#     html.Div([
-#         dcc.Graph(id='dashboard-con')
-#     ], style={
-#         'background-image': 'linear-gradient(to right, #83a4d4, #b6fbff)',  # Fondo degradado
-#         'padding': '20px',  # Añadir padding para mejor visualización
-#         'border-radius': '10px',  # Añadir bordes redondeados
-#         'marginBottom': '50px'
-#     }),
-
-#     html.Div([
-#         dcc.Graph(id='dashboard-sin')
-#     ], style={
-#         'background-image': 'linear-gradient(to right, #83a4d4, #b6fbff)',  # Fondo degradado
-#         'padding': '20px',  # Añadir padding para mejor visualización
-#         'border-radius': '10px'
-#     })
-# ])
-
-# # Callback para actualizar ambos gráficos basado en la selección de periodo, línea, categoría y tipo de gráfico
-# @callback(
-#     [Output('dashboard-con', 'figure'),
-#      Output('dashboard-sin', 'figure')],
-#     [Input('tiempo-dropdown', 'value'),
-#      Input('linea-dropdown', 'value'),
-#      Input('categoria-dropdown', 'value'),
-#      Input('tipo-grafico-dropdown', 'value')]
-# )
-# def update_dashboards(selected_time, selected_line, selected_category, selected_graph_type):
-#     # Obtener los datos desde el archivo CSV
-#     df = obtener_datos_desde_csv()
-
-#     # Definir los colores basados en la línea seleccionada
-#     line_colors = {
-#         'LINEA ROJA': 'red',
-#         'LINEA AMARILLA': 'yellow',
-#         'LINEA VERDE': 'green',
-#         'LINEA AZUL': 'blue',
-#         'LINEA PLATEADA': 'gray'
-#     }
-    
-#     color = line_colors.get(selected_line, 'black')  # Color predeterminado negro si no coincide
-
-#     # Verificar si la selección existe en el mapa de columnas
-#     if selected_time in column_map and selected_line in column_map[selected_time]:
-#         column = column_map[selected_time][selected_line].get(selected_category, None)
-
-#         if column:
-#             # Filtrar los datos de las filas con "CON" en la columna "Tareas"
-#             df_con = df[df['Tareas'].str.contains('CON', na=False)][['Unnamed: 1', column]].copy()
-#             df_con[column] = pd.to_numeric(df_con[column], errors='coerce')
-#             df_con = df_con.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
-
-#             # Filtrar los datos de las filas con "SIN" en la columna "Tareas"
-#             df_sin = df[df['Tareas'].str.contains('SIN', na=False)][['Unnamed: 1', column]].copy()
-#             df_sin[column] = pd.to_numeric(df_sin[column], errors='coerce')
-#             df_sin = df_sin.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
-
-#             # Seleccionar el tipo de gráfico
-#             if selected_graph_type == 'Barra':
-#                 fig_con = px.bar(df_con, x='Descripción', y='Valor', title=f'CON {selected_category}', color_discrete_sequence=[color])
-#                 fig_sin = px.bar(df_sin, x='Descripción', y='Valor', title=f'SIN {selected_category}', color_discrete_sequence=[color])
-#             elif selected_graph_type == 'Línea':
-#                 fig_con = px.line(df_con, x='Descripción', y='Valor', title=f'CON {selected_category}', line_shape='linear', color_discrete_sequence=[color])
-#                 fig_sin = px.line(df_sin, x='Descripción', y='Valor', title=f'SIN {selected_category}', line_shape='linear', color_discrete_sequence=[color])
-#             elif selected_graph_type == 'Dispersión':
-#                 fig_con = px.scatter(df_con, x='Descripción', y='Valor', title=f'CON {selected_category}', color_discrete_sequence=[color])
-#                 fig_sin = px.scatter(df_sin, x='Descripción', y='Valor', title=f'SIN {selected_category}', color_discrete_sequence=[color])
-
-#             # Agregar texto en cada gráfico
-#             fig_con.update_traces(texttemplate='%{y:.2f}', textposition='outside')
-#             fig_sin.update_traces(texttemplate='%{y:.2f}', textposition='outside')
-
-#             return fig_con, fig_sin
-#         else:
-#             # Si no hay columnas válidas, devolver gráficos vacíos
-
-#             return px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line} {selected_category}'), \
-#                    px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line} {selected_category}')
-#     else:
-#         # Si no se encuentra el mapeo adecuado
-#         return px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line}'), \
-#                px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line}')
-
-
 import pandas as pd
 import plotly.express as px
 from dash import dcc, html, Input, Output, callback
@@ -592,15 +136,6 @@ layout = html.Div([
     ], style={'width': '23%', 'display': 'inline-block', 'paddingLeft': '20px'}),
 
     html.Div([
-        html.Label('Seleccione la categoría:'),
-        dcc.Dropdown(
-            id='categoria-dropdown-1',
-            options=[{'label': categoria, 'value': categoria} for categoria in category_options],
-            value='S1R1'  # Valor predeterminado
-        ),
-    ], style={'width': '23%', 'display': 'inline-block', 'paddingLeft': '20px'}),
-
-    html.Div([
         html.Label('Seleccione el tipo de gráfico:'),
         dcc.Dropdown(
             id='tipo-grafico-dropdown-1',
@@ -611,36 +146,18 @@ layout = html.Div([
 
     html.Br(),
 
-    html.Div([
-        dcc.Graph(id='dashboard-con-1')
-    ], style={
-        'background-image': 'linear-gradient(to right, #83a4d4, #b6fbff)', 
-        'padding': '20px', 
-        'border-radius': '10px', 
-        'marginBottom': '50px'
-    }),
-
-    html.Div([
-        dcc.Graph(id='dashboard-sin-1')
-    ], style={
-        'background-image': 'linear-gradient(to right, #83a4d4, #b6fbff)', 
-        'padding': '20px', 
-        'border-radius': '10px'
-    })
-    
-    
+    # Contenedor donde se generarán los dashboards
+    html.Div(id='dashboard-container')
 ])
 html.Br(),
 # Callback para actualizar ambos gráficos basado en la selección de periodo, línea, categoría y tipo de gráfico
 @callback(
-    [Output('dashboard-con-1', 'figure'),
-     Output('dashboard-sin-1', 'figure')],
+    Output('dashboard-container', 'children'),
     [Input('tiempo-dropdown-1', 'value'),
      Input('linea-dropdown-1', 'value'),
-     Input('categoria-dropdown-1', 'value'),
      Input('tipo-grafico-dropdown-1', 'value')]
 )
-def update_dashboards(selected_time, selected_line, selected_category, selected_graph_type):
+def update_dashboards(selected_time, selected_line, selected_graph_type):
     # Obtener los datos desde el archivo CSV
     df = obtener_datos_desde_csv()
 
@@ -658,24 +175,30 @@ def update_dashboards(selected_time, selected_line, selected_category, selected_
         'LINEA PLATEADA': 'gray'
     }
     color = line_colors.get(selected_line, 'black')  # Color predeterminado negro si no coincide
-    # figure_size = (800, 800)  # Ajusta las dimensiones de la figura aquí
-    # Si se selecciona "MOSTRAR DATOS TODOS LOS MESES"
-        # Si se selecciona "MOSTRAR DATOS TODOS LOS MESES"
+
+    # Contenedor para almacenar las gráficas generadas
+    dashboard_figures = []
+
+    # Verificar si se seleccionó "MOSTRAR DATOS TODOS LOS MESES"
     if selected_time == 'MOSTRAR DATOS TODOS LOS MESES':
-        df_con_combined = pd.DataFrame()
-        df_sin_combined = pd.DataFrame()
+        # Iterar sobre todas las categorías en el mapa de columnas para la línea seleccionada
+        for category in category_options:
+            df_con_combined = pd.DataFrame()
+            df_sin_combined = pd.DataFrame()
 
-        for month in ['MENSUAL 05', 'MENSUAL 06', 'MENSUAL 07', 'MENSUAL 08', 'MENSUAL 09', 'MENSUAL 10']:
-            if month in column_map and selected_line in column_map[month]:
-                if selected_category in column_map[month][selected_line]:
-                    column = column_map[month][selected_line].get(selected_category, None)
-
-                    if column:
+            for month in ['MENSUAL 05', 'MENSUAL 06', 'MENSUAL 07', 'MENSUAL 08', 'MENSUAL 09', 'MENSUAL 10']:
+                # Verificar si la línea y la categoría están en el mapeo del mes actual
+                if month in column_map and selected_line in column_map[month] and category in column_map[month][selected_line]:
+                    column = column_map[month][selected_line].get(category, None)
+                    
+                    # Verificar si la columna existe en el DataFrame
+                    if column and column in df.columns:
                         # Filtrar y preparar datos para "CON CABINAS"
                         df_con = df[df['Tareas'].str.contains('CON', na=False)][['Unnamed: 1', column]].copy()
                         df_con[column] = pd.to_numeric(df_con[column], errors='coerce')
                         df_con = df_con.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
                         df_con['Mes'] = month
+                        df_con['Categoría'] = category  # Agregar la categoría al DataFrame
                         df_con_combined = pd.concat([df_con_combined, df_con], ignore_index=True)
 
                         # Filtrar y preparar datos para "SIN CABINAS"
@@ -683,326 +206,144 @@ def update_dashboards(selected_time, selected_line, selected_category, selected_
                         df_sin[column] = pd.to_numeric(df_sin[column], errors='coerce')
                         df_sin = df_sin.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
                         df_sin['Mes'] = month
+                        df_sin['Categoría'] = category  # Agregar la categoría al DataFrame
                         df_sin_combined = pd.concat([df_sin_combined, df_sin], ignore_index=True)
 
-        # Crear la figura para "CON CABINAS" con tipo de gráfico seleccionado
-        if selected_graph_type == 'Barra':
-            fig_con = px.bar(df_con_combined, x='Mes', y='Valor', color='Descripción', title='CON CABINAS - Todos los Meses',
-                             color_discrete_sequence=[color], barmode='group', text='Valor')
-        # Crear la figura para "CON CABINAS" con tipo de gráfico Línea (con puntos y valores)
-        if selected_graph_type == 'Línea':
-            fig_con = px.line(
-            df_con_combined.groupby('Mes').sum().reset_index(),
-            x='Mes', y='Valor', 
-            title='CON CABINAS - Todos los Meses',
-            line_shape='linear',
-            markers=True,
-            color_discrete_sequence=[color]
-        )
+            # Verificar si los DataFrames están vacíos antes de crear los gráficos
+            if not df_con_combined.empty:
+                fig_con = generate_graph(df_con_combined, 'Mes', 'Valor', color, selected_graph_type, f'CON CABINAS - {category}', group_bars=True)
+                dashboard_figures.append(html.Div(dcc.Graph(figure=fig_con), style={'margin': '20px'}))
 
-        # Agregar etiquetas de valor en cada punto
-            fig_con.update_traces(text=df_con_combined.groupby('Mes').sum()['Valor'].apply(lambda x: f'{x:.2f}'), textposition='top center')
+            if not df_sin_combined.empty:
+                fig_sin = generate_graph(df_sin_combined, 'Mes', 'Valor', color, selected_graph_type, f'SIN CABINAS - {category}', group_bars=True)
+                dashboard_figures.append(html.Div(dcc.Graph(figure=fig_sin), style={'margin': '20px'}))
 
-            # Agregar línea de tendencia
-            if len(df_con_combined) > 1:
-                x_values = np.arange(len(df_con_combined['Mes'].unique()))
-                z = np.polyfit(x_values, df_con_combined.groupby('Mes').sum()['Valor'], 1)
-                p = np.poly1d(z)
-                fig_con.add_scatter(x=df_con_combined['Mes'].unique(), y=p(x_values), mode='lines', name='Tendencia', line=dict(color='black'))
-                 # Expandir el rango del eje X para dar más espacio
-                fig_con.update_xaxes(range=[-0.5, len(df_con_combined['Mes'].unique()) - 0.5])
-            elif selected_graph_type == 'Dispersión':
-    # Gráfico de dispersión para "CON CABINAS"
-                fig_con = px.scatter(df_con_combined.groupby('Mes').sum().reset_index(), x='Mes', y='Valor', title='CON CABINAS - Todos los Meses',
-                         color_discrete_sequence=[color])
-
-        # Crear la figura para "SIN CABINAS" con tipo de gráfico seleccionado
-        if selected_graph_type == 'Barra':
-            fig_sin = px.bar(df_sin_combined, x='Mes', y='Valor', color='Descripción', title='SIN CABINAS - Todos los Meses',
-                             color_discrete_sequence=[color], barmode='group', text='Valor')
-        # Crear la figura para "SIN CABINAS" con tipo de gráfico Línea (con puntos y valores)
-        if selected_graph_type == 'Línea':
-            fig_sin = px.line(
-            df_sin_combined.groupby('Mes').sum().reset_index(),
-            x='Mes', y='Valor', 
-            title='SIN CABINAS - Todos los Meses',
-            line_shape='linear',
-            markers=True,
-            color_discrete_sequence=[color]
-        )
-
-        # Agregar etiquetas de valor en cada punto
-            fig_sin.update_traces(text=df_sin_combined.groupby('Mes').sum()['Valor'].apply(lambda x: f'{x:.2f}'), textposition='top center')
-
-            # Agregar línea de tendencia
-            if len(df_sin_combined) > 1:
-                x_values_sin = np.arange(len(df_sin_combined['Mes'].unique()))
-                z_sin = np.polyfit(x_values_sin, df_sin_combined.groupby('Mes').sum()['Valor'], 1)
-                p_sin = np.poly1d(z_sin)
-                fig_sin.add_scatter(x=df_sin_combined['Mes'].unique(), y=p_sin(x_values_sin), mode='lines', name='Tendencia', line=dict(color='black'))
-                # Expandir el rango del eje X para dar más espacio
-                fig_sin.update_xaxes(range=[-0.5, len(df_sin_combined['Mes'].unique()) - 0.5])
-            elif selected_graph_type == 'Dispersión':fig_sin = px.scatter(df_sin_combined.groupby('Mes').sum().reset_index(), x='Mes', y='Valor', title='SIN CABINAS - Todos los Meses',
-                         color_discrete_sequence=[color])
-    
-        return fig_con, fig_sin
-
-    # Si se selecciona un mes específico
+    # Si se selecciona un mes específico en lugar de "MOSTRAR DATOS TODOS LOS MESES"
     else:
-        if selected_line in column_map[selected_time]:
-            column = column_map[selected_time][selected_line].get(selected_category, None)
+        selected_categories = column_map.get(selected_time, {}).get(selected_line, {}).keys()
 
-            if column:
-                # Filtrar datos para "CON"
+        for category in selected_categories:
+            column = column_map[selected_time][selected_line].get(category, None)
+
+            if column and column in df.columns:
+                # Filtrar datos para "CON CABINAS"
                 df_con = df[df['Tareas'].str.contains('CON', na=False)][['Unnamed: 1', column]].copy()
                 df_con[column] = pd.to_numeric(df_con[column], errors='coerce')
                 df_con = df_con.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
 
-                # Filtrar datos para "SIN"
+                # Filtrar datos para "SIN CABINAS"
                 df_sin = df[df['Tareas'].str.contains('SIN', na=False)][['Unnamed: 1', column]].copy()
                 df_sin[column] = pd.to_numeric(df_sin[column], errors='coerce')
                 df_sin = df_sin.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
 
-                # Crear la figura para el gráfico CON
-                if selected_graph_type == 'Barra':
-                    fig_con = px.bar(df_con, x='Descripción', y='Valor', title=f'CON CABINAS {selected_category} - {selected_time}',
-                                     color_discrete_sequence=[color])
-                elif selected_graph_type == 'Línea':
-                    fig_con = px.line(df_con, x='Descripción', y='Valor', title=f'CON CABINAS {selected_category} - {selected_time}',
-                                      color_discrete_sequence=[color])
-                    
-                 #   Agregar línea de tendencia si hay suficientes datos
-                    if len(df_con) > 1:  # Asegúrate de tener más de un punto de datos
-                        x_values = np.arange(len(df_con))  # Crear un array de índices
-                        z = np.polyfit(x_values, df_con['Valor'], 1)  # Ajustar una línea
-                        p = np.poly1d(z)  # Crear una función polinómica
-                        # Añadir la línea de tendencia al gráfico
-                        fig_con.add_scatter(x=df_con['Descripción'], y=p(x_values), mode='lines', name='Tendencia', line=dict(color='black'))
-                elif selected_graph_type == 'Dispersión':
-                    fig_con = px.scatter(df_con, x='Descripción', y='Valor', title=f'CON CABINAS {selected_category} - {selected_time}',
-                                         color_discrete_sequence=[color])
+                # Crear las figuras "CON CABINAS" y "SIN CABINAS" sin el modo agrupado
+                fig_con = generate_graph(df_con, 'Descripción', 'Valor', color, selected_graph_type, f'CON CABINAS - {category} - {selected_time}', group_bars=False)
+                fig_sin = generate_graph(df_sin, 'Descripción', 'Valor', color, selected_graph_type, f'SIN CABINAS - {category} - {selected_time}', group_bars=False)
 
-                # Crear la figura para el gráfico SIN
-                if selected_graph_type == 'Barra':
-                    fig_sin = px.bar(df_sin, x='Descripción', y='Valor', title=f'SIN CABINAS {selected_category} - {selected_time}',
-                                     color_discrete_sequence=[color])
-                elif selected_graph_type == 'Línea':
-                    fig_sin = px.line(df_sin, x='Descripción', y='Valor', title=f'SIN CABINAS {selected_category} - {selected_time}',
-                                      color_discrete_sequence=[color])
+                # Agregar ambos gráficos al contenedor de dashboards
+                dashboard_figures.extend([
+                    html.Div(dcc.Graph(figure=fig_con), style={'margin': '20px'}),
+                    html.Div(dcc.Graph(figure=fig_sin), style={'margin': '20px'})
+                ])
 
-                    # Agregar línea de tendencia si hay suficientes datos
-                    if len(df_sin) > 1:  # Asegúrate de tener más de un punto de datos
-                        x_values_sin = np.arange(len(df_sin))  # Crear un array de índices
-                        z_sin = np.polyfit(x_values_sin, df_sin['Valor'], 1)  # Ajustar una línea
-                        p_sin = np.poly1d(z_sin)  # Crear una función polinómica  
-                        # Añadir la línea de tendencia al gráfico
-                        fig_sin.add_scatter(x=df_sin['Descripción'], y=p_sin(x_values_sin), mode='lines', name='Tendencia', line=dict(color='black'))                  
-                elif selected_graph_type == 'Dispersión':
-                    fig_sin = px.scatter(df_sin, x='Descripción', y='Valor', title=f'SIN CABINAS {selected_category} - {selected_time}',
-                                         color_discrete_sequence=[color])
-                # fig_sin.update_layout(width=figure_size[0], height=figure_size[1], margin=dict(l=40, r=40, t=40, b=40))
-                # # Ajustar el tamaño de la gráfica
-                # fig_con.update_layout(width=600, height=400, margin=dict(l=40, r=40, t=40, b=40))
-                # fig_sin.update_layout(width=600, height=400, margin=dict(l=40, r=40, t=40, b=40))
+    return dashboard_figures
+def generate_graph(df, x_column, y_column, color, graph_type, title, group_bars=False):
+    if graph_type == 'Barra':
+        fig = px.bar(df, x=x_column, y=y_column, color='Descripción', title=title, barmode='group' if group_bars else 'relative', text=y_column)
+        fig.update_traces(marker=dict(color=color))
 
-                # Expandir el rango del eje X para dar más espacio a la tendencia
-                fig_con.update_xaxes(range=[-0.5, len(df_con) - 0.5])
-                fig_sin.update_xaxes(range=[-0.5, len(df_sin) - 0.5])
-
-                return fig_con, fig_sin
-
-    # Si no hay datos para graficar, devolver gráficos vacíos
-    return px.Figure(), px.Figure()
-
-
-# yopi  yopi 
-# yopi
-
-    # if selected_time == 'MOSTRAR DATOS TODOS LOS MESES':
-    #     df_con_combined = pd.DataFrame()
-    #     df_sin_combined = pd.DataFrame()
-        
-    #     for month in ['MENSUAL 05', 'MENSUAL 06', 'MENSUAL 07', 'MENSUAL 08', 'MENSUAL 09', 'MENSUAL 10']:
-    #         if month in column_map and selected_line in column_map[month]:
-    #             column = column_map[month][selected_line].get(selected_category, None)
+    elif graph_type == 'Línea':
+        if not df.empty:
+            # Si estamos en "MOSTRAR DATOS TODOS LOS MESES", mostramos cada punto como una secuencia continua sin saltos
+            if x_column == 'Mes' and len(df[x_column].unique()) > 1:
+                # Crear una columna de orden para asegurar la continuidad de la línea
+                df['Orden'] = df['Mes'] + ' ' + df['Descripción']
                 
-    #             if column:
-    #                 # Filtrar datos para "CON"
-    #                 df_con = df[df['Tareas'].str.contains('CON', na=False)][['Unnamed: 1', column]].copy()
-    #                 df_con[column] = pd.to_numeric(df_con[column], errors='coerce')
-    #                 df_con = df_con.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
-    #                 df_con['Mes'] = month  # Añadir columna para el mes
-    #                 df_con_combined = pd.concat([df_con_combined, df_con], ignore_index=True)
+                # Convertir 'Orden' a una categoría ordenada para mantener el orden en el gráfico
+                df['Orden'] = pd.Categorical(df['Orden'], ordered=True, categories=sorted(df['Orden'].unique()))
+                df = df.sort_values(by=['Orden']).reset_index(drop=True)
 
-    #                 # Filtrar datos para "SIN"
-    #                 df_sin = df[df['Tareas'].str.contains('SIN', na=False)][['Unnamed: 1', column]].copy()
-    #                 df_sin[column] = pd.to_numeric(df_sin[column], errors='coerce')
-    #                 df_sin = df_sin.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
-    #                 df_sin['Mes'] = month  # Añadir columna para el mes
-    #                 df_sin_combined = pd.concat([df_sin_combined, df_sin], ignore_index=True)
+                # Nos aseguramos de que el valor sea numérico y quitamos NaN
+                df[y_column] = pd.to_numeric(df[y_column], errors='coerce')
+                df = df.dropna(subset=[y_column])  # Eliminamos valores no numéricos
 
-    #     # Crear la figura para el gráfico CON
-    #     if selected_graph_type == 'Barra':
-    #         fig_con = px.bar(df_con_combined, x='Descripción', y='Valor', color='Mes', title='CON CABINAS - Todos los Meses',
-    #                          color_discrete_sequence=px.colors.qualitative.Set1, barmode='group')
-    #     elif selected_graph_type == 'Línea':
-    #         fig_con = px.line(df_con_combined, x='Descripción', y='Valor', color='Mes', title='CON CABINAS - Todos los Meses',
-    #                           color_discrete_sequence=px.colors.qualitative.Set1)
-    #                     # Agregar línea de tendencia
-    #         x_values = np.arange(len(df_con_combined))  # Crear un array de índices
-    #         z = np.polyfit(x_values, df_con_combined['Valor'], 1)  # Ajustar una línea
-    #         p = np.poly1d(z)  # Crear una función polinómica
-    #         # Añadir la línea de tendencia al gráfico
-    #         fig_con.add_scatter(x=df_con['Descripción'], y=p(x_values), mode='lines', name='Tendencia', line=dict(color='red'))
-    #     elif selected_graph_type == 'Dispersión':
-    #         fig_con = px.scatter(df_con_combined, x='Descripción', y='Valor', color='Mes', title='CON CABINAS - Todos los Meses',
-    #                              color_discrete_sequence=px.colors.qualitative.Set1)
+                # Graficar utilizando 'Orden' como eje x para una línea continua
+                fig = px.line(df, x='Orden', y=y_column, title=title, markers=True)
+                fig.update_traces(marker=dict(size=6, color=color), line=dict(width=2, color=color))
 
-    #     # Crear la figura para el gráfico SIN
-    #     if selected_graph_type == 'Barra':
-    #         fig_sin = px.bar(df_sin_combined, x='Descripción', y='Valor', color='Mes', title='SIN CABINAS - Todos los Meses',
-    #                          color_discrete_sequence=px.colors.qualitative.Set1, barmode='group')
-    #     elif selected_graph_type == 'Línea':
-    #         fig_sin = px.line(df_sin_combined, x='Descripción', y='Valor', color='Mes', title='SIN CABINAS - Todos los Meses',
-    #                           color_discrete_sequence=px.colors.qualitative.Set1)
-    #                     # Agregar línea de tendencia
-    #         x_values_sin = np.arange(len(df_sin_combined))  # Crear un array de índices
-    #         z_sin = np.polyfit(x_values_sin, df_sin_combined['Valor'], 1)  # Ajustar una línea
-    #         p_sin = np.poly1d(z_sin)  # Crear una función polinómica
-    #         # Añadir la línea de tendencia al gráfico
-    #         fig_sin.add_scatter(x=df_sin['Descripción'], y=p_sin(x_values_sin), mode='lines', name='Tendencia', line=dict(color='red'))
-                              
-    #     elif selected_graph_type == 'Dispersión':
-    #         fig_sin = px.scatter(df_sin_combined, x='Descripción', y='Valor', color='Mes', title='SIN CABINAS - Todos los Meses',
-    #                              color_discrete_sequence=px.colors.qualitative.Set1)
-
-    #     return fig_con, fig_sin
-
-    # # Si se selecciona un mes específico
-    # else:
-    #     if selected_line in column_map[selected_time]:
-    #         column = column_map[selected_time][selected_line].get(selected_category, None)
-
-    #         if column:
-    #             # Filtrar datos para "CON"
-    #             df_con = df[df['Tareas'].str.contains('CON', na=False)][['Unnamed: 1', column]].copy()
-    #             df_con[column] = pd.to_numeric(df_con[column], errors='coerce')
-    #             df_con = df_con.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
-
-    #             # Filtrar datos para "SIN"
-    #             df_sin = df[df['Tareas'].str.contains('SIN', na=False)][['Unnamed: 1', column]].copy()
-    #             df_sin[column] = pd.to_numeric(df_sin[column], errors='coerce')
-    #             df_sin = df_sin.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
-
-    #             # Crear la figura para el gráfico CON
-    #             if selected_graph_type == 'Barra':
-    #                 fig_con = px.bar(df_con, x='Descripción', y='Valor', title=f'CON CABINAS {selected_category} - {selected_time}',
-    #                                  color_discrete_sequence=[color])
-    #             elif selected_graph_type == 'Línea':
-    #                 fig_con = px.line(df_con, x='Descripción', y='Valor', title=f'CON CABINAS {selected_category} - {selected_time}',
-    #                                   color_discrete_sequence=[color])
-    #                             # Agregar línea de tendencia
-    #                 x_values = np.arange(len(df_con_combined))  # Crear un array de índices
-    #                 z = np.polyfit(x_values, df_con_combined['Valor'], 1)  # Ajustar una línea
-    #                 p = np.poly1d(z)  # Crear una función polinómica
-    #                 # Añadir la línea de tendencia al gráfico
-    #                 fig_con.add_scatter(x=df_con['Descripción'], y=p(x_values), mode='lines', name='Tendencia', line=dict(color='red'))
-    #             elif selected_graph_type == 'Dispersión':
-    #                 fig_con = px.scatter(df_con, x='Descripción', y='Valor', title=f'CON CABINAS {selected_category} - {selected_time}',
-    #                                      color_discrete_sequence=[color])
-
-    #             # Crear la figura para el gráfico SIN
-    #             if selected_graph_type == 'Barra':
-    #                 fig_sin = px.bar(df_sin, x='Descripción', y='Valor', title=f'SIN CABINAS {selected_category} - {selected_time}',
-    #                                  color_discrete_sequence=[color])
-    #             elif selected_graph_type == 'Línea':
-    #                 fig_sin = px.line(df_sin, x='Descripción', y='Valor', title=f'SIN CABINAS {selected_category} - {selected_time}',
-    #                                   color_discrete_sequence=[color])
-    #         # Agregar línea de tendencia
-    #                 x_values_sin = np.arange(len(df_sin_combined))  # Crear un array de índices
-    #                 z_sin = np.polyfit(x_values_sin, df_sin_combined['Valor'], 1)  # Ajustar una línea
-    #                 p_sin = np.poly1d(z_sin)  # Crear una función polinómica  
-    #                 # Añadir la línea de tendencia al gráfico
-    #                 fig_sin.add_scatter(x=df_sin['Descripción'], y=p_sin(x_values_sin), mode='lines', name='Tendencia', line=dict(color='red'))                  
-    #             elif selected_graph_type == 'Dispersión':
-    #                 fig_sin = px.scatter(df_sin, x='Descripción', y='Valor', title=f'SIN CABINAS {selected_category} - {selected_time}',
-    #                                      color_discrete_sequence=[color])
-
-    #             return fig_con, fig_sin
-
-    # # Si no hay datos para graficar, devolver gráficos vacíos
-    #         return px.Figure(), px.Figure()
-    #     else:
-    #         # Si no hay columnas válidas, devolver gráficos vacíos
-    #      return px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line} {selected_category}'), \
-    #                px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line} {selected_category}')
-
-
-
-
-# #     if selected_time == 'MOSTRAR DATOS TODOS LOS MESES':
-#         figures_con = []
-#         figures_sin = []
-        
-#         for month in ['MENSUAL 05', 'MENSUAL 06', 'MENSUAL 07', 'MENSUAL 08', 'MENSUAL 09', 'MENSUAL 10']:
-#             if month in column_map and selected_line in column_map[month]:
-#                 column = column_map[month][selected_line].get(selected_category, None)
+                # Agregar línea de tendencia para todos los puntos
+                try:
+                    x_values = np.arange(len(df))
+                    z = np.polyfit(x_values, df[y_column], 1)
+                    p = np.poly1d(z)
+                    fig.add_scatter(
+                        x=df['Orden'],
+                        y=p(x_values),
+                        mode='lines',
+                        name='Tendencia',
+                        line=dict(color='black', width=2, dash='dash')
+                    )
+                except np.linalg.LinAlgError:
+                    print("Advertencia: No se pudo calcular la línea de tendencia debido a problemas con los datos.")
                 
-#                 if column:
-#                     df_con = df[df['Tareas'].str.contains('CON', na=False)][['Unnamed: 1', column]].copy()
-#                     df_con[column] = pd.to_numeric(df_con[column], errors='coerce')
-#                     df_con = df_con.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
-                    
-#                     df_sin = df[df['Tareas'].str.contains('SIN', na=False)][['Unnamed: 1', column]].copy()
-#                     df_sin[column] = pd.to_numeric(df_sin[column], errors='coerce')
-#                     df_sin = df_sin.rename(columns={column: 'Valor', 'Unnamed: 1': 'Descripción'})
-                    
-#             # Imprimir valores para depuración
-#             print(f"Tipo de gráfico seleccionado: {selected_graph_type}")
-#             print(f"Categoría seleccionada: {selected_category}")
-#             print(f"Color seleccionado: {color}")
-#             print(f"Datos CON CABINAS: {df_con.head()}")
-#             print(f"Datos SIN CABINAS: {df_sin.head()}")
-#             print(df.columns)  # Verifica los nombres de las columnas
+                fig.update_layout(margin=dict(l=40, r=40, t=40, b=40))
+
+            else:
+                # Gráfico para meses individuales
+                df = df.sort_index()
+                fig = px.line(df, x=x_column, y=y_column, title=title, markers=True)
+                fig.update_traces(marker=dict(size=6), line=dict(width=2, color=color))
+
+                # Línea de tendencia para los meses individuales
+                if len(df[x_column].unique()) > 1:
+                    try:
+                        x_values = np.arange(len(df))
+                        z = np.polyfit(x_values, df[y_column], 1)
+                        p = np.poly1d(z)
+                        fig.add_scatter(
+                            x=df[x_column],
+                            y=p(x_values),
+                            mode='lines',
+                            name='Tendencia',
+                            line=dict(color='black', width=2, dash='dash')
+                        )
+                    except np.linalg.LinAlgError:
+                        print("Advertencia: No se pudo calcular la línea de tendencia debido a problemas con los datos.")
+                fig.update_layout(margin=dict(l=40, r=40, t=40, b=40))
+
+    elif graph_type == 'Dispersión':
+        if not df.empty:
+            df = df.sort_index()
+            fig = px.scatter(df, x=x_column, y=y_column, title=title)
+            fig.update_traces(marker=dict(size=8, color=color))
+
+            if len(df[x_column].unique()) > 1:
+                try:
+                    x_values = np.arange(len(df))
+                    z = np.polyfit(x_values, df[y_column], 1)
+                    p = np.poly1d(z)
+                    fig.add_scatter(
+                        x=df[x_column],
+                        y=p(x_values),
+                        mode='lines',
+                        name='Tendencia',
+                        line=dict(color='black', width=2, dash='dash')
+                    )
+                except np.linalg.LinAlgError:
+                    print("Advertencia: No se pudo calcular la línea de tendencia debido a problemas con los datos.")
+            fig.update_layout(margin=dict(l=40, r=40, t=40, b=40))
+
+    fig.update_layout(
+        title=title,
+        xaxis_title='Orden',
+        yaxis_title=y_column,
+        legend_title_text='Descripción',
+        xaxis=dict(showline=True, showgrid=False, zeroline=False, tickangle=45),
+        yaxis=dict(showline=True, showgrid=True, zeroline=False)
+    )
+    return fig
 
 
-#              # Selección del tipo de gráfico
-#             if selected_graph_type == 'Barra':
-#               fig_con = px.bar(df_con, x='Descripción', y='Valor', title=f'CON CABINAS {selected_category}', color_discrete_sequence=[color])
-#               fig_sin = px.bar(df_sin, x='Descripción', y='Valor', title=f'SIN CABINAS {selected_category}', color_discrete_sequence=[color])
-     
-#     # Ajustes específicos para gráficos de barra
-#               fig_con.update_traces(texttemplate='%{y:.2f}', textposition='outside')
-#               fig_sin.update_traces(texttemplate='%{y:.2f}', textposition='outside')
 
-            # elif selected_graph_type == 'Línea':
-            #   fig_con = px.line(df_con, x='Descripción', y='Valor', title=f'CON CABINAS {selected_category}', line_shape='linear', color_discrete_sequence=[color])
-            #   fig_sin = px.line(df_sin, x='Descripción', y='Valor', title=f'SIN CABINAS {selected_category}', line_shape='linear', color_discrete_sequence=[color])
-    
-#     # Ajustes específicos para gráficos de línea (opcional)
-#               fig_con.update_traces(mode='lines+markers')  # Mostrar líneas con marcadores
-#               fig_sin.update_traces(mode='lines+markers')
-
-#             elif selected_graph_type == 'Dispersión':
-#              fig_con = px.scatter(df_con, x='Descripción', y='Valor', title=f'CON CABINAS {selected_category}', color_discrete_sequence=[color])
-#              fig_sin = px.scatter(df_sin, x='Descripción', y='Valor', title=f'SIN CABINAS {selected_category}', color_discrete_sequence=[color])
-    
-#     # Ajustes específicos para gráficos de dispersión (opcional)
-#              fig_con.update_traces(marker=dict(size=15))  # Cambiar tamaño de los puntos
-#              fig_sin.update_traces(marker=dict(size=15))
-
-#             else:
-#                  print("Tipo de gráfico no reconocido")
-
-# # Mostrar las gráficas
-#             return fig_con, fig_sin
-
-#         else:
-#             # Si no hay columnas válidas, devolver gráficos vacíos
-#             return px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line} {selected_category}'), \
-#                    px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line} {selected_category}')
-#     else:
-#         # Si no se encuentra el mapeo adecuado
-#         return px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line}'), \
-#                px.bar(title=f'Sin datos disponibles para {selected_time} {selected_line}')
-#------------------------------------------------------------------
+#yopiiiiiiiiiiii funciona sin la linea de tendencia88
+#yoppii funciona funcionaaa 1
