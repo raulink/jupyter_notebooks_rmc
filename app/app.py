@@ -2,12 +2,12 @@ from dash import Dash, dcc, html, Input, Output, State
 import dash_bootstrap_components as dbc
 from dash import dash_table
 from pages import procesos
-from pages import dashboard, linearoja, partidas, grafico_ingreso, grafico_salida, operaciones, indicadoresDeTorres, indicadoresDeVehiculos,indicadoresSemestre, carroTensor
+from pages import dashboard, linearoja, partidas, grafico_ingreso, grafico_salida, operaciones, indicadoresDeTorres, indicadoresDeVehiculos, indicadoresSemestre, carroTensor
+from pages.ascensores import generar_layout_ascensores, crear_callbacks_ascensores # Importar
 
 # Crear instancia de la aplicación Dash y agregar hoja de estilo CSS
 external_stylesheets = ["https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/morph/bootstrap.min.css"]
 app = Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=True)
-
 server = app.server  # Esta es la instancia Flask subyacente
 
 # Crear la barra lateral deslizable (Offcanvas)
@@ -27,7 +27,7 @@ sidebar = dbc.Offcanvas(
                 dbc.NavLink("Gráfico De Salidas", href="/grafico_salida", active="exact"),
                 dbc.NavLink("Dashboard Operaciones", href="/operaciones", active="exact"),
                 dbc.NavLink("Indicadores Preventivos", href="/linearoja", active="exact"),
-                
+                dbc.NavLink("Ascensores", href="/ascensores", active="exact"),
                 # Mover el DropdownMenu dentro del dbc.Nav
                 dbc.DropdownMenu(
                     label="INDICADORES DE CONFIABILIDAD",
@@ -52,14 +52,13 @@ sidebar = dbc.Offcanvas(
                 ),
             ],
             vertical=True,
-            pills=True,  
+            pills=True,
         ),
     ],
     id="offcanvas-sidebar",
     is_open=False,
     style={'background-color': '#f8f9fa', 'padding': '20px'}
 )
-
 
 # Crear la barra superior con un botón tipo "sandwich"
 navbar = dbc.Navbar(
@@ -84,8 +83,6 @@ navbar = dbc.Navbar(
     dark=True,
     style={"padding-left": "0px"}  # Asegura que no haya padding a la izquierda
 )
-
-
 
 # Imagen para mostrar en la pantalla principal
 main_image = html.Img(src="/assets/miteleferico.png", style={"width": "100%", "height": "auto"})
@@ -135,7 +132,7 @@ def display_pag(pathname):
         return dashboard.layout
     elif pathname == '/linearoja':
         return linearoja.layout
-    elif pathname == '/partidas': 
+    elif pathname == '/partidas':
         return partidas.layout
     elif pathname == '/grafico_ingreso':
         return grafico_ingreso.layout
@@ -143,19 +140,22 @@ def display_pag(pathname):
         return grafico_salida.layout
     elif pathname == '/operaciones':
         return operaciones.layout
-    elif pathname == '/indicadoresDeTorres': 
-         return indicadoresDeTorres.layout
-    elif pathname == '/indicadoresDeVehiculos': 
-         return indicadoresDeVehiculos.layout
-    elif pathname == '/indicadoresSemestre': 
-         return indicadoresSemestre.layout
-    elif pathname == '/carroTensor': 
-         return carroTensor.layout
-    elif pathname == '/procesos': 
-         return procesos.layout
-     
+    elif pathname == '/indicadoresDeTorres':
+        return indicadoresDeTorres.layout
+    elif pathname == '/indicadoresDeVehiculos':
+        return indicadoresDeVehiculos.layout
+    elif pathname == '/indicadoresSemestre':
+        return indicadoresSemestre.layout
+    elif pathname == '/carroTensor':
+        return carroTensor.layout
+    elif pathname == '/procesos':
+        return procesos.layout
+    elif pathname == '/ascensores':
+        return html.Div(generar_layout_ascensores()) # Envolver el layout en un html.Div
     else:
         return dbc.Alert("404 - Página no encontrada", color="danger")
 
+crear_callbacks_ascensores(app) # Llamar a la función de callbacks
+
 if __name__ == '__main__':
-    app.run_server(debug=False, host='0.0.0.0', port=8080)
+    app.run(debug=False, host='0.0.0.0', port=8080)
