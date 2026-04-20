@@ -13,10 +13,10 @@ import plotly.graph_objects as go
 load_dotenv()
 
 # Obtener los detalles de la conexión desde el archivo .env
-MYSQL_USER = os.getenv('MYSQL_USER')
-MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
-MYSQL_HOST = os.getenv('MYSQL_HOST')
-MYSQL_DATABASE = os.getenv('MYSQL_DATABASE')
+MYSQL_USER = os.getenv('postgres')
+MYSQL_PASSWORD = os.getenv('postgres')
+MYSQL_HOST = os.getenv('localhost')
+MYSQL_DATABASE = os.getenv('ingresos_db')
 
 # Crear la URL de conexión
 connection_string = f'mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DATABASE}'
